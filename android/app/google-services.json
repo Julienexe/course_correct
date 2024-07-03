@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "379140133762",
+    "project_id": "course-correct-b0de5",
+    "storage_bucket": "course-correct-b0de5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379140133762:android:e70f915603442b132ef59b",
+        "android_client_info": {
+          "package_name": "com.coursecorrect.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379140133762-22rme508plli2b5qm98fvv1ehm9n2hfg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8Vn1thTWFgnyql9sgc2euF52_MsBPeuM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379140133762-22rme508plli2b5qm98fvv1ehm9n2hfg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
