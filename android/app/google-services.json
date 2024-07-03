@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:379140133762:android:e70f915603442b132ef59b",
         "android_client_info": {
-          "package_name": "com.coursecorrect.app"
+          "package_name": "com.example.course_correct"
         }
       },
       "oauth_client": [
