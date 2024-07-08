@@ -43,4 +43,5 @@ flutter:
         - asset: assets/fonts/SITKAVF.TTF 
         - asset: assets/fonts/TAHOMABD.TTF 
 
-  
+  assets:
+   - lib/images/download.png
