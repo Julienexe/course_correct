@@ -33,4 +33,5 @@ flutter:
   
   uses-material-design: true
 
-  
+  assets:
+   - lib/images/download.png
