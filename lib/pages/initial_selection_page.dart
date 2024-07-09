@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 class RoleSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
+    
+      return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -32,8 +31,7 @@ class RoleSelectionPage extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -82,6 +80,23 @@ class RoleSelectionButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class SettingsPage extends StatelessWidget {
+const SettingsPage({ super.key });
+
+  @override
+  Widget build(BuildContext context){
+    return Container(
+      child: 
+      Center(
+        child: const Text('Coming Soon!',style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),),
+      )
     );
   }
 }
