@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 //a place to build and design logic for reusable widgets and useful assets such as the app bar, bottom bar and much more

@@ -119,6 +119,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 //create user exception handling coming in later
                 await FirebaseAuth.instance.createUserWithEmailAndPassword(
                     email: email, password: password);
+                Navigator.pushNamed(context, '/landingpage');
                 // //print(userCredential);
                 // //sending a verification email
               },
