@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+
+class RoleSelectionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Are you a Student or a Tutor?',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 40),
+              RoleSelectionButton(
+                role: 'Student',
+                onTap: () {
+                  // Navigate to student page
+                },
+              ),
+              const SizedBox(height: 20),
+              RoleSelectionButton(
+                role: 'Tutor',
+                onTap: () {
+                  // Navigate to tutor page
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RoleSelectionButton extends StatelessWidget {
+  final String role;
+  final VoidCallback onTap;
+
+  const RoleSelectionButton({
+    Key? key,
+    required this.role,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 5,
+        child: SizedBox(
+          width: 250, // Set the width of the button
+          height: 100, // Set the height of the button
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  role == 'Student' ? Icons.school : Icons.person,
+                  size: 50,
+                  color: Colors.blue,
+                ),
+                const SizedBox(width: 20),
+                Text(
+                  role,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
