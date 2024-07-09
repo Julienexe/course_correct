@@ -18,6 +18,7 @@ dependencies:
   firebase_core: ^3.1.1
   firebase_auth: ^5.1.1
   cloud_firestore: ^5.0.2
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +37,7 @@ flutter:
   assets:
   - assets/animations/course correct.json
   - assets/animations/course correct (cyan).json
+  - lib/images/download.png
 
   fonts:
     - family: Schyler
@@ -43,5 +45,5 @@ flutter:
         - asset: assets/fonts/SITKAVF.TTF 
         - asset: assets/fonts/TAHOMABD.TTF 
 
-  assets:
-   - lib/images/download.png
+  
+  

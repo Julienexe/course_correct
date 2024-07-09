@@ -126,6 +126,9 @@ class _LoginPageState extends State<LoginPage> {
                   await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: email, password: password);
 
+                  //navigate to landing page
+                  Navigator.pushNamed(context, '/landingpage');
+
                   // UserProfile user = await AppState().readUserProfileFromFirestore();
 
                   // Navigator.of(context).pushNamedAndRemoveUntil(homeRoute,
@@ -177,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                    MaterialPageRoute(builder: (context) => const RegisterPage()),
                   );
                 },
                 style: ButtonStyle(
