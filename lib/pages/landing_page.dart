@@ -1,11 +1,17 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:course_correct/main.dart';
+import 'package:course_correct/pages/initial_selection_page.dart';
+import 'package:course_correct/pages/login_page.dart';
+import 'package:course_correct/pages/profile_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
-  LandingPage({super.key});
+  const LandingPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LandingPageState createState() => _LandingPageState();
 }
 
@@ -13,22 +19,21 @@ class _LandingPageState extends State<LandingPage> {
   int _selectedIndex = 0;
   // String? _selectedCategory;
 
-  // final List<Widget> _pages = [
-  // homepage
-  //   SecondPage(),
+   final List<Widget> _pages = [
+     RoleSelectionPage(),
 
-  //   //profile page
-  //   ThirdPage(),
+     //profile page
+     ProfilePage1(),
 
-  //   //settings page
-  //   SettingsPage(),
-  // ];
+     //settings page
+     SettingsPage(),
+   ];
 
-  // void _navigateBottomBar(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //   });
-  // }
+   void _navigateBottomBar(int index) {
+     setState(() {
+       _selectedIndex = index;
+     });
+   }
 
   @override
   Widget build(BuildContext context) {
@@ -78,37 +83,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ),
               // Categories with Dropdown
-              ListTile(
-                leading: Icon(Icons.category),
-                title: Row(
-                  children: [
-                    Expanded(child: Text("Courses")),
-                    DropdownButton<String>(
-                      // value: _selectedCategory,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          // _selectedCategory = newValue;
-                        });
-                      },
-                      items: <String>[
-                        'Computer Science',
-                        'Law',
-                        'Engineering',
-                        'Business',
-                        'Languages',
-                        'Economics',
-                        'Architecture',
-                        'Humanities'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
+              
               ListTile(
                 leading: Icon(Icons.settings),
                 title: Text("Settings"),
@@ -121,6 +96,10 @@ class _LandingPageState extends State<LandingPage> {
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text("Logout"),
+                onTap: () {
+                  //log user out
+                 appState.logoutUser(context);
+                },
               ),
             ],
           ),
@@ -131,7 +110,7 @@ class _LandingPageState extends State<LandingPage> {
         selectedItemColor: Colors.blueGrey,
         unselectedItemColor: Colors.lightBlueAccent,
         currentIndex: _selectedIndex,
-        // onTap: _navigateBottomBar,
+        onTap: _navigateBottomBar,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -147,7 +126,9 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ],
       ),
-      // body: _pages[_selectedIndex],
+      body: _pages[_selectedIndex],
     );
   }
+
+  
 }
