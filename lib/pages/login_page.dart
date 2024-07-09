@@ -46,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(16),
-        height: 800,
+        height: double.infinity,
+        decoration: const BoxDecoration(color: Colors.white),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [

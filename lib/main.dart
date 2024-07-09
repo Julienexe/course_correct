@@ -26,6 +26,10 @@ class MyApp extends StatelessWidget {
           '/landingpage': (context) => LandingPage(),
         },
         theme: ThemeData(
+          primarySwatch: Colors.cyan,
+          colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.cyan,
+          ),
           textTheme: const TextTheme(
             headlineLarge:
                 TextStyle(fontFamily: 'Schyler', fontWeight: FontWeight.bold),

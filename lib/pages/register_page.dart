@@ -34,7 +34,8 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(15),
-        height: 800,
+        height: double.infinity,
+        decoration: const BoxDecoration(color: Colors.white),
         child: ListView(
           children: [
             const Center(

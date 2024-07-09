@@ -1,5 +1,8 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:course_correct/pages/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
@@ -78,37 +81,7 @@ class _LandingPageState extends State<LandingPage> {
                 ),
               ),
               // Categories with Dropdown
-              ListTile(
-                leading: Icon(Icons.category),
-                title: Row(
-                  children: [
-                    Expanded(child: Text("Courses")),
-                    DropdownButton<String>(
-                      // value: _selectedCategory,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          // _selectedCategory = newValue;
-                        });
-                      },
-                      items: <String>[
-                        'Computer Science',
-                        'Law',
-                        'Engineering',
-                        'Business',
-                        'Languages',
-                        'Economics',
-                        'Architecture',
-                        'Humanities'
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ),
+              
               ListTile(
                 leading: Icon(Icons.settings),
                 title: Text("Settings"),
@@ -121,6 +94,14 @@ class _LandingPageState extends State<LandingPage> {
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text("Logout"),
+                onTap: () {
+                  //log user out
+                  FirebaseAuth.instance.signOut();
+                  Navigator.pop(context);
+                  // go to login page
+                  Navigator.pushReplacement(context, 
+                  MaterialPageRoute(builder: (context) => const LoginPage()));
+                },
               ),
             ],
           ),
