@@ -2,27 +2,13 @@ import 'package:flutter/material.dart';
 
 
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Student Homepage',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const StudentHomepage(),
-    );
-  }
-}
-
 class StudentHomepage extends StatelessWidget {
   const StudentHomepage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Student Homepage'),
         actions: [

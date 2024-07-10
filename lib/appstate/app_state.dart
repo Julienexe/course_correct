@@ -1,4 +1,5 @@
 //change notifier class
+import 'package:course_correct/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -27,5 +28,13 @@ class AppState extends ChangeNotifier {
     await Firebase.initializeApp();
 
     user = FirebaseAuth.instance.currentUser;
+  }
+
+  void logoutUser(BuildContext context) {
+     FirebaseAuth.instance.signOut();
+    Navigator.pop(context);
+    // go to login page
+    Navigator.pushReplacement(context, 
+    MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 }

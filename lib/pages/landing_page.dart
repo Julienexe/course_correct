@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/initial_selection_page.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/profile_page.dart';
@@ -97,11 +98,7 @@ class _LandingPageState extends State<LandingPage> {
                 title: Text("Logout"),
                 onTap: () {
                   //log user out
-                  FirebaseAuth.instance.signOut();
-                  Navigator.pop(context);
-                  // go to login page
-                  Navigator.pushReplacement(context, 
-                  MaterialPageRoute(builder: (context) => const LoginPage()));
+                 appState.logoutUser(context);
                 },
               ),
             ],
@@ -132,4 +129,6 @@ class _LandingPageState extends State<LandingPage> {
       body: _pages[_selectedIndex],
     );
   }
+
+  
 }

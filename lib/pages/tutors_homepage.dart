@@ -17,6 +17,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Tutor Homepage'),
         actions: [
@@ -138,8 +139,8 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   QuickLinkButton(text: 'Appointments', icon: Icons.calendar_today),
-                  QuickLinkButton(text: 'Manage Availability', icon: Icons.schedule),
-                  QuickLinkButton(text: 'Message Students', icon: Icons.message),
+                  QuickLinkButton(text: 'Availability', icon: Icons.schedule),
+                  QuickLinkButton(text: 'Messages', icon: Icons.message),
                 ],
               ),
             ],

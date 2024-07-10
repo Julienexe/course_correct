@@ -1,6 +1,10 @@
+import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutor_selection_page.dart';
 import 'package:flutter/material.dart';
 
 class RoleSelectionPage extends StatelessWidget {
+  const RoleSelectionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     
@@ -19,6 +23,7 @@ class RoleSelectionPage extends StatelessWidget {
                 role: 'Student',
                 onTap: () {
                   // Navigate to student page
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const StudentHomepage()));
                 },
               ),
               const SizedBox(height: 20),
@@ -26,6 +31,7 @@ class RoleSelectionPage extends StatelessWidget {
                 role: 'Tutor',
                 onTap: () {
                   // Navigate to tutor page
+                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>TutorAvailabilityPage()));
                 },
               ),
             ],
@@ -40,15 +46,17 @@ class RoleSelectionButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const RoleSelectionButton({
-    Key? key,
+    super.key,
     required this.role,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: (){
+       onTap();
+      },
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -89,14 +97,11 @@ const SettingsPage({ super.key });
 
   @override
   Widget build(BuildContext context){
-    return Container(
-      child: 
-      Center(
-        child: const Text('Coming Soon!',style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),),
-      )
+    return const Center(
+      child: Text('Coming Soon!',style: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+      ),),
     );
   }
 }

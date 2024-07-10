@@ -58,19 +58,15 @@ class _LoginPageState extends State<LoginPage> {
               'Course Correct',
               style: TextStyle(
                 fontSize: 30,
-                color: Color.fromARGB(255, 64, 120, 166),
+                color: Color.fromARGB(255, 0, 0, 0),
                 fontFamily: 'Arial',
                 fontWeight: FontWeight.w900,
               ),
             ),
-            const Text(
-              'Learn Anew',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color.fromARGB(255, 0, 0, 0),
-                fontFamily: 'Arial',
-                fontWeight: FontWeight.bold,
-              ),
+            Image.asset(
+              'assets/icons/campus_connect_logo.png',
+              height: 100,
+              width: 100,
             ),
             TextField(
               controller: _email,
@@ -145,7 +141,7 @@ class _LoginPageState extends State<LoginPage> {
               },
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(
-                    const Color.fromARGB(255, 64, 120, 166)),
+                    Color.fromARGB(255, 0, 0, 0)),
                 foregroundColor: WidgetStateProperty.all(Colors.white),
                 shape: WidgetStateProperty.all(
                   RoundedRectangleBorder(
@@ -186,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 style: ButtonStyle(
                   foregroundColor: WidgetStateProperty.all(
-                      const Color.fromARGB(255, 31, 87, 165)),
+                      Color.fromARGB(255, 0, 0, 0)),
                   shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
                   )),
@@ -198,6 +194,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(
                     fontSize: 15,
                     fontFamily: 'Arial',
+                    color: Colors.black
                   ),
                 ),
               ),

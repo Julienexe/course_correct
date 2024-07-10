@@ -38,6 +38,7 @@ flutter:
   assets:
   - assets/animations/course correct.json
   - assets/animations/course correct (cyan).json
+  - assets/icons/campus_connect_logo.png
   - lib/images/download.png
 
   fonts:

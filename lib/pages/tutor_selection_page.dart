@@ -1,3 +1,4 @@
+import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
 
 class TutorAvailabilityPage extends StatefulWidget {
@@ -54,6 +55,7 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Tutor Availability'),
       ),
@@ -151,6 +153,7 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle form submission
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TutorHomepage()));
                 },
                 child: const Text('Submit'),
               ),
