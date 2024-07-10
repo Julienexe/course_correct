@@ -2,9 +2,7 @@
 
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/initial_selection_page.dart';
-import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/profile_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatefulWidget {
