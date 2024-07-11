@@ -1,28 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:course_correct/models/courses_models.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+
+final List<String> subjects = [];
+Future<List<CoursesModel>> getCourses() async {
+  var snap = await FirebaseFirestore.instance.collection("Courses ").get();
+  return CoursesModel.listFromFirestore(snap);
+}
 
 class TutorAvailabilityPage extends StatefulWidget {
   @override
   _TutorAvailabilityPageState createState() => _TutorAvailabilityPageState();
 }
 
-class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
-  final List<String> subjects = [
-    'Python',
-    'C',
-    'C++',
-    'Web Development',
-    'Embedded Systems',
-  ];
+Future<void> populateSubjects() async {
+    List<CoursesModel> courses = await getCourses();
+    while (subjects.isEmpty) {
+  for (var course in courses) {
+    subjects.add(course.name);
+  }
+  //update selected subjects map
+  for (var subject in subjects) {
+    selectedSubjects[subject] = false;
+  }
+}
+  }
 
-  final Map<String, bool> selectedSubjects = {
-    'Python': false,
-    'C': false,
-    'C++': false,
-    'Web Development': false,
-    'Embedded Systems': false,
-  };
+final Map<String, bool> selectedSubjects = {};
+
+class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
+  //list of courses
+
 
   final Map<String, bool> selectedDays = {
     'Monday': false,
@@ -53,6 +63,8 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
     }
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,27 +81,8 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
               'Select Subjects You Want to Teach',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Expanded(
-              child: ListView(
-                children: subjects.map((subject) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: CheckboxListTile(
-                      title: Text(subject),
-                      value: selectedSubjects[subject],
-                      onChanged: (bool? value) {
-                        setState(() {
-                          selectedSubjects[subject] = value ?? false;
-                        });
-                      },
-                    ),
-                  );
-                }).toList(),
-              ),
+            const Expanded(
+              child: Subjects(),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -154,7 +147,10 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
               child: ElevatedButton(
                 onPressed: () {
                   // Handle form submission
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TutorHomepage()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const TutorHomepage()));
                 },
                 child: const Text('Submit'),
               ),
@@ -162,6 +158,73 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Subjects extends StatefulWidget {
+  const Subjects({
+    super.key,
+  });
+
+  @override
+  State<Subjects> createState() => _SubjectsState();
+}
+
+class _SubjectsState extends State<Subjects> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: populateSubjects(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text('Error: ${snapshot.error}'),
+          );
+        } else {
+         return SubjectSelection(
+            selectedSubjects: selectedSubjects,
+            subjects: subjects,
+         );
+        }
+      },
+    );
+  }
+}
+
+class SubjectSelection extends StatefulWidget {
+  final selectedSubjects;
+  final subjects;
+  const SubjectSelection({super.key, this.selectedSubjects, this.subjects});
+
+  @override
+  _SubjectSelectionState createState() => _SubjectSelectionState();
+}
+
+class _SubjectSelectionState extends State<SubjectSelection> {
+  @override
+  Widget build(BuildContext context) {
+    List<String> subjects = widget.subjects;
+    Map<String, bool> selectedSubjects = widget.selectedSubjects;
+    return MultiSelectDialogField(
+      title: const Text('Subjects'),
+      backgroundColor: Colors.white,
+      buttonText: const Text('Subjects'),
+      dialogHeight: 200,
+      items: subjects
+          .map((subject) => MultiSelectItem<String>(subject, subject))
+          .toList(),
+      onConfirm: (value) {
+        setState(() {
+          //remove the item from the selected list if it is already selected
+          selectedSubjects.remove(value);
+        });
+        
+      },
     );
   }
 }

@@ -8,12 +8,19 @@ class CoursesModel {
     required this.name,
   });
 
-  //from firestore
-  CoursesModel.fromSnapshot(DocumentSnapshot snapshot)
-  : name = snapshot['name'];
+  //factory method to create a new instance of the model from firestore
+  factory CoursesModel.fromFirestore(DocumentSnapshot doc) {
+    Map data = doc.data() as Map<String, dynamic>;
+    return CoursesModel(
+      name: data['name'],
+    );
+  }
 
-  //list of courses from firestore
-  static List<CoursesModel> fromSnapshotList(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) => CoursesModel.fromSnapshot(doc)).toList();
-    }
+  //method to create a list of model instances from firestore
+  static List<CoursesModel> listFromFirestore(QuerySnapshot snapshot) {
+
+    return snapshot.docs.map((doc) {
+      return CoursesModel.fromFirestore(doc);
+    }).toList();
+  }
 }
