@@ -1,4 +1,6 @@
 //change notifier class
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/models/tutor_model.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +10,7 @@ class AppState extends ChangeNotifier {
   bool animationcomplete = false;
 
   //variable to store the current user 
-  dynamic user;
+  User? user;
   //variable to store the current theme
   ThemeData _theme = ThemeData.light();
   //getter to get the current theme
@@ -37,5 +39,28 @@ class AppState extends ChangeNotifier {
     Navigator.pushReplacement(context, 
     MaterialPageRoute(builder: (context) => const LoginPage()));
   }
+
+  void registerTutorOnFirestore(TutorModel tutor){
+    FirebaseFirestore.instance.collection('tutors').doc(user!.uid).set(tutor.toFirestore());
+  }
+
+  Future<TutorModel?> getTutor()async{
+    final tutorRef = FirebaseFirestore.instance.collection('tutors').doc(user!.uid).withConverter(fromFirestore:TutorModel.fromFirestore , toFirestore: (TutorModel tutor, _) =>tutor.toFirestore());
+    final tutorSnap = await tutorRef.get();
+    final tutor = tutorSnap.data();
+    return tutor;
+  }
+
+  //function to get all tutors
+  Future<List<TutorModel>> getAllTutors() async {
+    final tutorsRef = FirebaseFirestore.instance.collection('tutors').withConverter(
+      fromFirestore: (snapshot, _) => TutorModel.fromFirestore(snapshot.data()! as DocumentSnapshot<Map<String, dynamic>>,_),
+      toFirestore: (tutor, _) => tutor.toFirestore(),
+    );
+    final tutorsSnap = await tutorsRef.get();
+    final tutors = tutorsSnap.docs.map((doc) => doc.data()).toList();
+    return tutors;
+  }
+
   
 }
