@@ -1,6 +1,7 @@
 //change notifier class
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/models/tutor_model.dart';
+import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +26,7 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> iniialization()async{
+  Future<void> initialization()async{
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
@@ -62,5 +63,17 @@ class AppState extends ChangeNotifier {
     return tutors;
   }
 
-  
+  void usertoFirebase(bool isTutor){
+    FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
+      'isTutor': isTutor,
+    });
+  }
+
+  Future<bool> isUserTutor() async {
+    var user = FirebaseAuth.instance.currentUser;
+    final userRef = FirebaseFirestore.instance.collection('users').doc(user!.uid).withConverter(fromFirestore: UserModel.fromFirestore, toFirestore: (user, _) => user.toFirestore());
+    final userSnap = await userRef.get();
+    final userModel = userSnap.data();
+    return userModel!.isTutor;
+  }
 }
