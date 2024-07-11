@@ -7,37 +7,42 @@ class RoleSelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Are you a Student or a Tutor?',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 40),
-              RoleSelectionButton(
-                role: 'Student',
-                onTap: () {
-                  // Navigate to student page
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const StudentHomepage()));
-                },
-              ),
-              const SizedBox(height: 20),
-              RoleSelectionButton(
-                role: 'Tutor',
-                onTap: () {
-                  // Navigate to tutor page
-                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>TutorAvailabilityPage()));
-                },
-              ),
-            ],
-          ),
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Are you a Student or a Tutor?',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 40),
+            RoleSelectionButton(
+              role: 'Student',
+              onTap: () {
+                // Navigate to student page
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const StudentHomepage()),);
+              },
+            ),
+            const SizedBox(height: 20),
+            RoleSelectionButton(
+              role: 'Tutor',
+              onTap: () {
+                // Navigate to tutor page
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TutorAvailabilityPage()),);
+              },
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }
 
@@ -54,8 +59,8 @@ class RoleSelectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-       onTap();
+      onTap: () {
+        onTap();
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -93,15 +98,18 @@ class RoleSelectionButton extends StatelessWidget {
 }
 
 class SettingsPage extends StatelessWidget {
-const SettingsPage({ super.key });
+  const SettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return const Center(
-      child: Text('Coming Soon!',style: TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
-      ),),
+      child: Text(
+        'Coming Soon!',
+        style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }
