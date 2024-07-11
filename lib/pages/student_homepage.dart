@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-
-
 class StudentHomepage extends StatelessWidget {
   const StudentHomepage({super.key});
 
@@ -22,6 +20,8 @@ class StudentHomepage extends StatelessWidget {
             icon: const Icon(Icons.person),
             onPressed: () {
               // Navigate to profile
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/profilepage');
             },
           ),
         ],
