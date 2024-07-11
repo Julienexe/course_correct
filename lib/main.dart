@@ -1,6 +1,5 @@
 import 'package:course_correct/appstate/app_state.dart';
 import 'package:course_correct/pages/landing_page.dart';
-import 'package:course_correct/pages/add_course.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
