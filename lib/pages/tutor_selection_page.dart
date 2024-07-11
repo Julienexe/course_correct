@@ -1,5 +1,6 @@
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:course_correct/models/courses_models.dart';
 
 class TutorAvailabilityPage extends StatefulWidget {
   @override

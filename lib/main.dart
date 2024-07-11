@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/profilepage': (context) => const ProfilePage1(),
           '/landingpage': (context) => LandingPage(),
+          // '/settingspage': (context) => SettingsPage(),
         },
         theme: ThemeData(
           primarySwatch: Colors.cyan,
