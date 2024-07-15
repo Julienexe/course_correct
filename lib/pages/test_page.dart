@@ -16,7 +16,7 @@ class _TestPageState extends State<TestPage> {
   void initState() {
     super.initState();
      Future.delayed(const Duration(seconds: 3), () async{
-        await appState.iniialization();
+        await appState.initialization();
         //check if user exists
         if(appState.user != null){
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>LandingPage()));
