@@ -24,7 +24,7 @@ class _LandingPageState extends State<LandingPage> {
      ProfilePage1(),
 
      //settings page
-     SettingsPage(),
+    //  SettingsPage(),
    ];
 
    void _navigateBottomBar(int index) {

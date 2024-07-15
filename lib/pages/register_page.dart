@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/pages/login_page.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +28,14 @@ class _RegisterPageState extends State<RegisterPage> {
     _email.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  Future<void> _addStudentToFirestore(String uid) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection('users').doc(uid).set({
+      'email': _email.text,
+      'created_at': FieldValue.serverTimestamp(),
+    });
   }
 
   @override
@@ -116,11 +125,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   final email = _email.text;
                   final password = _password.text;
                   //create user exception handling coming in later
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email, password: password);
+
+                  try{
+                    final userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+                    await _addStudentToFirestore(userCredential.user!.uid);
                   Navigator.pushNamed(context, '/landingpage');
-                  // //print(userCredential);
-                  // //sending a verification email
+                  } catch (e) {
+                    print("Error: $e");
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(

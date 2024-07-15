@@ -1,9 +1,21 @@
-import 'package:course_correct/pages/student_homepage.dart';
-import 'package:course_correct/pages/tutor_selection_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
+
+  Future<void> updateUserRole(String role) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        'email': user.email,
+        'role': role,
+        'isEnrolled': false, // Assuming initial enrollment status is false
+        'createdAt': Timestamp.now(),
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,30 +25,19 @@ class RoleSelectionPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Are you a Student or a Tutor?',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 40),
             RoleSelectionButton(
               role: 'Student',
-              onTap: () {
-                // Navigate to student page
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const StudentHomepage()),);
+              onTap: () async {
+                await updateUserRole('student');
+                Navigator.pushNamed(context, '/studentHomepage');
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 50),
             RoleSelectionButton(
               role: 'Tutor',
-              onTap: () {
-                // Navigate to tutor page
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => TutorAvailabilityPage()),);
+              onTap: () async {
+                await updateUserRole('tutor');
+                Navigator.pushNamed(context, '/tutorAvailabilityPage');
               },
             ),
           ],
@@ -59,9 +60,7 @@ class RoleSelectionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        onTap();
-      },
+      onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
@@ -91,23 +90,6 @@ class RoleSelectionButton extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Coming Soon!',
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
         ),
       ),
     );

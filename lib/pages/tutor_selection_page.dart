@@ -82,6 +82,7 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const Expanded(
+              
               child: Subjects(),
             ),
             const SizedBox(height: 20),
@@ -210,21 +211,39 @@ class _SubjectSelectionState extends State<SubjectSelection> {
   Widget build(BuildContext context) {
     List<String> subjects = widget.subjects;
     Map<String, bool> selectedSubjects = widget.selectedSubjects;
-    return MultiSelectDialogField(
-      title: const Text('Subjects'),
-      backgroundColor: Colors.white,
-      buttonText: const Text('Subjects'),
-      dialogHeight: 200,
-      items: subjects
-          .map((subject) => MultiSelectItem<String>(subject, subject))
-          .toList(),
-      onConfirm: (value) {
-        setState(() {
-          //remove the item from the selected list if it is already selected
-          selectedSubjects.remove(value);
-        });
-        
-      },
+    return ListView(
+      children: [
+        Container(
+          height: 200, // fixed height
+          child: MultiSelectDialogField(
+            title: const Text('Subjects'),
+            backgroundColor: Colors.white,
+            buttonText: const Text('Subjects'),
+            dialogHeight: 200,
+            items: subjects
+               .map((subject) => MultiSelectItem<String>(subject, subject))
+               .toList(),
+            onConfirm: (value) {
+              setState(() {
+                //remove the item from the selected list if it is already selected
+                selectedSubjects.remove(value);
+              });
+            },
+          ),
+        ),
+        // Display selected subjects in a scrollable list
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: selectedSubjects.length,
+          itemBuilder: (context, index) {
+            String subject = selectedSubjects.keys.elementAt(index);
+            return ListTile(
+              title: Text(subject),
+            );
+          },
+        ),
+      ],
     );
   }
 }

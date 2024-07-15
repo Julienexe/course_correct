@@ -1,5 +1,8 @@
 import 'package:course_correct/appstate/app_state.dart';
+import 'package:course_correct/pages/homepage.dart';
 import 'package:course_correct/pages/landing_page.dart';
+import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutor_selection_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -26,8 +29,10 @@ class MyApp extends StatelessWidget {
         title: 'Course Correct',
         debugShowCheckedModeBanner: false,
         routes: {
+          '/studentHomepage': (context) => StudentHomepage(),
           '/profilepage': (context) => const ProfilePage1(),
           '/landingpage': (context) => LandingPage(),
+          '/tutorAvailabilityPage': (context) => TutorAvailabilityPage(),
           // '/settingspage': (context) => SettingsPage(),
         },
         theme: ThemeData(
