@@ -14,7 +14,7 @@ class RoleSelectionPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'Are you a Student or a Tutor?',
+              'Are you a Student or a Tutor',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 40),
