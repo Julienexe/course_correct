@@ -1,7 +1,22 @@
+import 'package:course_correct/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 class StudentHomepage extends StatelessWidget {
   const StudentHomepage({super.key});
+
+  // Function to handle logout action
+  void _handleLogout(BuildContext context) {
+    // Clear any stored authentication tokens or session data
+    // Example: AuthService.logout();
+
+    // Navigate to the login screen
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false, // This prevents going back to the previous screen
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,13 +66,13 @@ class StudentHomepage extends StatelessWidget {
             ListTile(
               title: const Text('Appointments'),
               onTap: () {
-                // Navigate to appointments
+                Navigator.pushNamed(context, '/appointments');
               },
             ),
             ListTile(
               title: const Text('Logout'),
               onTap: () {
-                // Log out
+                _handleLogout(context);
               },
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:course_correct/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -13,6 +14,20 @@ class _TutorHomepageState extends State<TutorHomepage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+    // Function to handle logout action
+  void _handleLogout(BuildContext context) {
+    // Clear any stored authentication tokens or session data
+    // Example: AuthService.logout();
+
+    // Navigate to the login screen
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false, // This prevents going back to the previous screen
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +69,19 @@ class _TutorHomepageState extends State<TutorHomepage> {
             ListTile(
               title: const Text('My Students'),
               onTap: () {
-                // Navigate to My Students
+                Navigator.pushNamed(context, '/students');
               },
             ),
             ListTile(
               title: const Text('Appointments'),
               onTap: () {
-                // Navigate to appointments
+                Navigator.pushNamed(context, '/appointments');
               },
             ),
             ListTile(
               title: const Text('Logout'),
               onTap: () {
-                // Log out
+                _handleLogout(context);
               },
             ),
           ],
@@ -138,9 +153,27 @@ class _TutorHomepageState extends State<TutorHomepage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  QuickLinkButton(text: 'Appointments', icon: Icons.calendar_today),
-                  QuickLinkButton(text: 'Availability', icon: Icons.schedule),
-                  QuickLinkButton(text: 'Messages', icon: Icons.message),
+                  QuickLinkButton(
+                    text: 'Appointments',
+                    icon: Icons.calendar_today,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/appointments');
+                    },
+                  ),
+                  QuickLinkButton(
+                    text: 'Manage Availability',
+                    icon: Icons.schedule,
+                    onPressed: () {
+                      // Handle Manage Availability press
+                    },
+                  ),
+                  QuickLinkButton(
+                    text: 'Message Students',
+                    icon: Icons.message,
+                    onPressed: () {
+                      // Handle Message Students press
+                    },
+                  )
                 ],
               ),
             ],
@@ -205,7 +238,7 @@ class QuickLinkButton extends StatelessWidget {
   final IconData icon;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton({super.key, required this.text, required this.icon});
+  QuickLinkButton({super.key, required this.text, required this.icon, required Null Function() onPressed});
 
   @override
   Widget build(BuildContext context) {
