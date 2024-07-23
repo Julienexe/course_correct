@@ -3,19 +3,20 @@ import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/landing_page.dart';
 import 'package:course_correct/pages/tutor_appointments.dart';
 import 'package:course_correct/pages/tutor_students.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:course_correct/pages/zoom_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_correct/pages/profile_page.dart';
 import 'package:course_correct/pages/test_page.dart';
 import 'package:provider/provider.dart';
 
-
 late AppState appState;
+
 void main() async {
-  appState = AppState();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  appState = AppState();
   runApp(const MyApp());
 }
 
@@ -48,12 +49,35 @@ class MyApp extends StatelessWidget {
                 TextStyle(fontFamily: 'Schyler', fontWeight: FontWeight.bold),
           ),
         ),
-        home: Builder(
-            
-            builder: (context) {
-              appState.user = FirebaseAuth.instance.currentUser;
-              return const TestPage();
-            }),
+        home: Builder(builder: (context) {
+          return const TestPage();
+        }),
+      ),
+    );
+  }
+}
+
+//for laterrrrrrr!!!!
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Zoom API Integration'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            ZoomService zoomService = ZoomService();
+            await zoomService.createMeeting(
+              topic: 'Test Meeting',
+              startTime: '2024-07-23T10:00:00Z',
+            );
+          },
+          child: const Text('Create Zoom Meeting'),
+        ),
       ),
     );
   }

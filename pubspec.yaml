@@ -12,6 +12,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.1
+  flutter_dotenv: ^5.0.2
+  
+
 
   lottie: ^3.1.2
   cupertino_icons: ^1.0.6

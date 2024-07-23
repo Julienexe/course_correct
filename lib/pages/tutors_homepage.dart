@@ -15,7 +15,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-    // Function to handle logout action
+  // Function to handle logout action
   void _handleLogout(BuildContext context) {
     // Clear any stored authentication tokens or session data
     // Example: AuthService.logout();
@@ -27,7 +27,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
       (route) => false, // This prevents going back to the previous screen
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +116,8 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
                     _selectedDay = selectedDay;
-                    _focusedDay = focusedDay; // update `_focusedDay` here as well
+                    _focusedDay =
+                        focusedDay; // update `_focusedDay` here as well
                   });
                 },
                 onFormatChanged: (format) {
@@ -143,8 +143,11 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 children: <Widget>[
-                  RequestCard(requestDetails: 'Math tutoring request from Student 1'),
-                  RequestCard(requestDetails: 'Science tutoring request from Student 2'),
+                  RequestCard(
+                      requestDetails: 'Math tutoring request from Student 1'),
+                  RequestCard(
+                      requestDetails:
+                          'Science tutoring request from Student 2'),
                 ],
               ),
               const SizedBox(height: 16.0),
@@ -238,7 +241,11 @@ class QuickLinkButton extends StatelessWidget {
   final IconData icon;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton({super.key, required this.text, required this.icon, required Null Function() onPressed});
+  QuickLinkButton(
+      {super.key,
+      required this.text,
+      required this.icon,
+      required Null Function() onPressed});
 
   @override
   Widget build(BuildContext context) {
