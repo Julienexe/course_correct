@@ -19,28 +19,31 @@ class RoleSelectionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RoleSelectionButton(
-              role: 'Student',
-              onTap: () async {
-                await updateUserRole('student');
-                Navigator.pushNamed(context, '/studentHomepage');
-              },
-            ),
-            const SizedBox(height: 50),
-            RoleSelectionButton(
-              role: 'Tutor',
-              onTap: () async {
-                await updateUserRole('tutor');
-                Navigator.pushNamed(context, '/tutorAvailabilityPage');
-              },
-            ),
-          ],
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 40),
+              RoleSelectionButton(
+                role: 'Student',
+                onTap: () async {
+                  await updateUserRole('student');
+                  Navigator.pushNamed(context, '/studentHomepage');
+                },
+              ),
+              const SizedBox(height: 50),
+              RoleSelectionButton(
+                role: 'Tutor',
+                onTap: () async {
+                  await updateUserRole('tutor');
+                  Navigator.pushNamed(context, '/tutorAvailabilityPage');
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

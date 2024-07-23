@@ -1,14 +1,17 @@
 import 'package:course_correct/appstate/app_state.dart';
-import 'package:course_correct/pages/homepage.dart';
+import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/landing_page.dart';
 import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutor_appointments.dart';
 import 'package:course_correct/pages/tutor_selection_page.dart';
+import 'package:course_correct/pages/tutor_students.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:course_correct/pages/profile_page.dart';
 import 'package:course_correct/pages/test_page.dart';
 import 'package:provider/provider.dart';
+
 
 late AppState appState;
 void main() async {
@@ -32,8 +35,12 @@ class MyApp extends StatelessWidget {
           '/studentHomepage': (context) => StudentHomepage(),
           '/profilepage': (context) => const ProfilePage1(),
           '/landingpage': (context) => LandingPage(),
-          '/tutorAvailabilityPage': (context) => TutorAvailabilityPage(),
-          // '/settingspage': (context) => SettingsPage(),
+          '/appointments': (context) => TutorAppointments(),
+          '/students': (context) => TutorStudents(),
+          // ignore: equal_keys_in_map
+          '/appointments': (context) => AppointmentsPage(),
+          // '/settingspage': (context) => SettingsPage(), 
+          '/tutorAvailabilityPage' : (context) => TutorAvailabilityPage(),
         },
         theme: ThemeData(
           primarySwatch: Colors.cyan,
