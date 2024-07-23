@@ -12,7 +12,7 @@ class TopicSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Practice Topic'),
+        title: const Text('Select Practice Topic'),
       ),
       body: Center(
         child: Column(
@@ -28,7 +28,7 @@ class TopicSelectionPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Algorithm Practice'),
+              child: const Text('Algorithm Practice'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -40,7 +40,7 @@ class TopicSelectionPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Web Development Practice'),
+              child: const Text('Web Development Practice'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -52,7 +52,7 @@ class TopicSelectionPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Programming Basics Practice'),
+              child: const Text('Programming Basics Practice'),
             ),
           ],
         ),
