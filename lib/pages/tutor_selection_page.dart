@@ -87,25 +87,36 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
     }
   }
 
-  Future<void> submitTutorInfo() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      List<String> selectedSubjectsList = selectedSubjects.keys.where((key) => selectedSubjects[key] == true).toList();
-      List<String> selectedDaysList = selectedDays.keys.where((key) => selectedDays[key] == true).toList();
-      String startTimeStr = startTime != null ? startTime!.format(context) : '';
-      String endTimeStr = endTime != null ? endTime!.format(context) : '';
+Future<void> submitTutorInfo() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
+      // Fetch the current data
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
 
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'email': user.email,
+      // Prepare the new data to be merged
+      Map<String, dynamic> newData = {
         'role': 'tutor',
-        'subjects': selectedSubjectsList,
-        'days': selectedDaysList,
-        'startTime': startTimeStr,
-        'endTime': endTimeStr,
-        'createdAt': Timestamp.now(),
+        'subjects': selectedSubjects.keys.where((key) => selectedSubjects[key] == true).toList(),
+        'days': selectedDays.keys.where((key) => selectedDays[key] == true).toList(),
+        'startTime': startTime != null ? startTime!.format(context) : '',
+        'endTime': endTime != null ? endTime!.format(context) : '',
+      };
+
+      // Merge existing data with new data
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        ...existingData,
+        ...newData,
       }, SetOptions(merge: true));
+
+    } catch (e) {
+      print("Error updating tutor info: $e");
     }
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {

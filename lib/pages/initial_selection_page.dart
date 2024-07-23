@@ -8,12 +8,25 @@ class RoleSelectionPage extends StatelessWidget {
   Future<void> updateUserRole(String role) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        'email': user.email,
-        'role': role,
-        'isEnrolled': false, // Assuming initial enrollment status is false
-        'createdAt': Timestamp.now(),
-      });
+      try {
+        // Fetch the current data
+        DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
+
+        // Prepare the new data to be merged
+        Map<String, dynamic> newData = {
+          'role': role,
+          'isEnrolled': false, // Assuming initial enrollment status is false
+        };
+
+        // Merge existing data with new data
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          ...existingData,
+          ...newData,
+        }, SetOptions(merge: true));
+      } catch (e) {
+        print("Error updating user role: $e");
+      }
     }
   }
 
