@@ -40,9 +40,10 @@ class MyApp extends StatelessWidget {
           // '/settingspage': (context) => SettingsPage(),
         },
         theme: ThemeData(
-          primarySwatch: Colors.cyan,
+          primaryColor: Colors.white,
           colorScheme: ColorScheme.fromSwatch(
             primarySwatch: Colors.cyan,
+            backgroundColor: Colors.white
           ),
           textTheme: const TextTheme(
             headlineLarge:
