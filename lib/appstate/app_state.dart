@@ -7,8 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:course_correct/models/algorithm_practice_result.dart';
-import 'package:course_correct/models/student_progress.dart';
 
 class AppState extends ChangeNotifier {
   bool animationcomplete = false;
@@ -20,9 +18,7 @@ class AppState extends ChangeNotifier {
   //getter to get the current theme
   ThemeData get theme => _theme;
   //function to change the theme
-  List<StudentProgress> _studentsProgress = [];
 
-  List<StudentProgress> get studentsProgress => _studentsProgress;
   void changeTheme() {
     if (_theme == ThemeData.light()) {
       _theme = ThemeData.dark();
@@ -32,26 +28,14 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> iniialization() async {
+
   Future<void> initialization()async{
-    WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
 
     user = FirebaseAuth.instance.currentUser;
     notifyListeners();
   }
 
-  void updateProgress(String studentId, int newProgress) {
-    var student = _studentsProgress.firstWhere((s) => s.studentId == studentId);
-    student.progress = newProgress;
-    notifyListeners();
-  }
 
-  void addPracticeResult(String studentId, AlgorithmPracticeResult result) {
-    var student = _studentsProgress.firstWhere((s) => s.studentId == studentId);
-    student.practiceResults.add(result);
-    notifyListeners();
-  }
 
   void logoutUser(BuildContext context) {
     FirebaseAuth.instance.signOut();
