@@ -1,8 +1,6 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/landing_page.dart';
 import 'package:course_correct/pages/login_page.dart';
-import 'package:course_correct/pages/student_homepage.dart';
-import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
