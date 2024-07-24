@@ -1,6 +1,7 @@
 //change notifier class
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/models/courses_models.dart';
 import 'package:course_correct/models/tutor_model.dart';
 import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/landing_page.dart';
@@ -22,6 +23,10 @@ class AppState extends ChangeNotifier {
   ThemeData get theme => _theme;
   //function to change the theme
 
+  //course related variables
+  String? courseName;
+  CoursesModel? course;
+
   void changeTheme() {
     if (_theme == ThemeData.light()) {
       _theme = ThemeData.dark();
@@ -35,7 +40,8 @@ class AppState extends ChangeNotifier {
     setUser(FirebaseAuth.instance.currentUser);
     setUserProfile(await readUserProfileFromFirestore());
   }
-
+  
+  //user related functions
   void setUser(User? user) {
     this.user = user;
     notifyListeners();
@@ -101,6 +107,17 @@ class AppState extends ChangeNotifier {
   Future<void> loginSequence(
       String email, String password, BuildContext context) async {
     try {
+       ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Row(
+        children: [
+          Text(
+            'Logging you in',
+            style: defaultTextStyle.copyWith(color: Colors.white),
+          ),
+          const Spacer(),
+          const CircularProgressIndicator()
+        ],
+      )));
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       User? user = userCredential.user;
@@ -132,8 +149,8 @@ class AppState extends ChangeNotifier {
           .collection('users')
           .doc(userUid)
           .withConverter(
-            fromFirestore: (snapshot, _) => UserModel.fromFirestore(
-                snapshot, _),
+            fromFirestore: (snapshot, _) =>
+                UserModel.fromFirestore(snapshot, _),
             toFirestore: (user, _) => user.toFirestore(),
           );
       final userSnap = await userRef.get();
@@ -147,6 +164,17 @@ class AppState extends ChangeNotifier {
   Future<void> registerSequence(
       String email, String password, String name, BuildContext context) async {
     try {
+       ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+          content: Row(
+        children: [
+          Text(
+            'Registering',
+            style: defaultTextStyle.copyWith(color: Colors.white),
+          ),
+          const Spacer(),
+          const CircularProgressIndicator()
+        ],
+      )));
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       User? user = userCredential.user;
@@ -169,6 +197,12 @@ class AppState extends ChangeNotifier {
 
   void setUserProfile(UserModel? userProfile) {
     this.userProfile = userProfile;
+    notifyListeners();
+  }
+
+  //COURSE RELATED FUNCTIONS
+  void setCourseName(String courseName) {
+    this.courseName = courseName;
     notifyListeners();
   }
 
