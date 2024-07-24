@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
           '/studentHomepage': (context) => StudentHomepage(),
           '/profilepage': (context) => const ProfilePage1(),
           '/landingpage': (context) => LandingPage(),
-          '/appointments': (context) => TutorAppointments(),
+          '/tutorappointments': (context) => TutorAppointments(),
           '/students': (context) => TutorStudents(),
           '/appointments': (context) => AppointmentsPage(),
           '/tutorAvailabilityPage': (context) => TutorAvailabilityPage(),
