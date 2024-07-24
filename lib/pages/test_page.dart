@@ -6,9 +6,10 @@ import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+var _scaffoldKey = GlobalKey<ScaffoldState>();
 class TestPage extends StatefulWidget {
   const TestPage({super.key});
-
+  
   @override
   _TestPageState createState() => _TestPageState();
 }
@@ -21,20 +22,10 @@ class _TestPageState extends State<TestPage> {
       await appState.initialization();
       //check if user exists
       if (appState.user != null) {
-        if (appState.userProfile != null) {
-          if (appState.userProfile!.role == 'tutor') {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const TutorHomepage()));
-          } else if (appState.userProfile!.role == 'student') {
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const StudentHomepage()));
-          }
-        }
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LandingPage()));
-      } else {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) =>  LandingPage()));
+      }
+       else {
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const LoginPage()));
       }
