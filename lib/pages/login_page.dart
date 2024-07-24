@@ -1,3 +1,4 @@
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -106,43 +107,13 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 5),
               FilledButton(
                 onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  try {
-                    //show login snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Row(
-                      children: [
-                        Text(
-                          'Logging you in',
-                          style: defaultTextStyle,
-                        ),
-                        Spacer(),
-                        CircularProgressIndicator()
-                      ],
-                    )));
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email, password: password);
-        
-                    //navigate to landing page
-                    Navigator.pushNamed(context, '/landingpage');
-        
-                    // UserProfile user = await AppState().readUserProfileFromFirestore();
-        
-                    // Navigator.of(context).pushNamedAndRemoveUntil(homeRoute,
-                    // (route) => false,
-                    // arguments: user
-        
-                    // );
-                  } catch (e) {
-                    //show the error on a snackbar
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(e.toString())));
-                  }
+                  final String email = _email.text;
+                  final String password = _password.text;
+                  appState.loginSequence(email, password, context);
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(
-                      Color.fromARGB(255, 0, 0, 0)),
+                      const Color.fromARGB(255, 0, 0, 0)),
                   foregroundColor: WidgetStateProperty.all(Colors.white),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
@@ -183,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   style: ButtonStyle(
                     foregroundColor: WidgetStateProperty.all(
-                        Color.fromARGB(255, 0, 0, 0)),
+                        const Color.fromARGB(255, 0, 0, 0)),
                     shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     )),
