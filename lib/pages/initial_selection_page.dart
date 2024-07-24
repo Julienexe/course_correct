@@ -46,6 +46,8 @@ class RoleSelectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      appBar: firstAppbar(),
+      drawer: firstDrawer(context),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -128,3 +130,76 @@ class RoleSelectionButton extends StatelessWidget {
     );
   }
 }
+
+ Drawer firstDrawer(BuildContext context) {
+    return Drawer(
+      child: Container(
+        color: Colors.grey[100],
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  iconColor: Colors.blueAccent, // background color
+                  backgroundColor: Colors.white, // foreground color
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/profilepage');
+                },
+                child: const Icon(
+                  Icons.person,
+                  size: 45,
+                ),
+              ),
+            ),
+            // Categories with Dropdown
+            
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+                // go to settings page
+                Navigator.pushNamed(context, '/settingspage');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () {
+                //log user out
+               appState.logoutUser(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  AppBar firstAppbar() {
+    return AppBar(
+      title: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Course ",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            "Correct ",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.black87,
+      elevation: 50,
+      iconTheme: const IconThemeData(color: Colors.lightBlueAccent),
+    );
+  }
+
