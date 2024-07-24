@@ -4,7 +4,6 @@ import 'package:course_correct/models/courses_models.dart';
 import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
