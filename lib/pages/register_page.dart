@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  Future<void> _addStudentToFirestore(String uid, String name) async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null){
-    await FirebaseFirestore.instance.collection('users').doc(uid).set({
-      'email': _email.text,
-      'name': _name.text, 
-      'created_at': FieldValue.serverTimestamp(),
-    });
-  }
-  }
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -135,20 +127,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   final name = _name.text;
                   //create user exception handling coming in later
 
-                  try {
-                    final userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: email, password: password);
-                    await _addStudentToFirestore(userCredential.user!.uid, name);
-                    Navigator.pushNamed(context, '/landingpage');
-                  } catch (e) {
-                    print("Error: $e");
-                  }
+                 appState.registerSequence(email, password, name, context);
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                       Color.fromARGB(255, 0, 0, 0)),
-                  shape: MaterialStateProperty.all(
+                
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
