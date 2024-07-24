@@ -19,7 +19,7 @@ class _TestPageState extends State<TestPage> {
         await appState.initialization();
         //check if user exists
         if(appState.user != null){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const LandingPage()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LandingPage()));
         }else{
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) =>const LoginPage()));
         }
