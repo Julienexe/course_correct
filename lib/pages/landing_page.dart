@@ -2,36 +2,10 @@
 
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/initial_selection_page.dart';
-import 'package:course_correct/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
-class LandingPage extends StatefulWidget {
-  const LandingPage({super.key});
-
-  @override
-  // ignore: library_private_types_in_public_api
-  _LandingPageState createState() => _LandingPageState();
-}
-
-class _LandingPageState extends State<LandingPage> {
-  int _selectedIndex = 0;
-  // String? _selectedCategory;
-
-   final List<Widget> _pages = [
-     RoleSelectionPage(),
-
-     //profile page
-     ProfilePage1(),
-
-     //settings page
-    //  SettingsPage(),
-   ];
-
-   void _navigateBottomBar(int index) {
-     setState(() {
-       _selectedIndex = index;
-     });
-   }
+class LandingPage extends StatelessWidget {
+  LandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -103,30 +77,8 @@ class _LandingPageState extends State<LandingPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black87,
-        selectedItemColor: Colors.blueGrey,
-        unselectedItemColor: Colors.lightBlueAccent,
-        currentIndex: _selectedIndex,
-        onTap: _navigateBottomBar,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
-          ),
-        ],
-      ),
-      body: _pages[_selectedIndex],
+      
+      body: RoleSelectionPage(),
     );
   }
-
-  
 }
