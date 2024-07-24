@@ -1,7 +1,6 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 const TextStyle defaultTextStyle = TextStyle(
     fontFamily: 'Arial',
