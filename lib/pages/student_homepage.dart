@@ -1,4 +1,6 @@
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
+import 'package:course_correct/pages/topic_selection_page.dart';
 import 'package:flutter/material.dart';
 
 class StudentHomepage extends StatelessWidget {
@@ -133,7 +135,7 @@ class StudentHomepage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  QuickLinkButton(text: 'Find a Tutor', icon: Icons.search),
+                  QuickLinkButton(text: 'Find a Tutor', icon: Icons.search,page: TopicSelectionPage(studentId: appState.user!.uid),),
                   QuickLinkButton(text: 'My Appointments', icon: Icons.calendar_today),
                   QuickLinkButton(text: 'Messages', icon: Icons.message),
                 ],
@@ -217,9 +219,10 @@ class AppointmentCard extends StatelessWidget {
 class QuickLinkButton extends StatelessWidget {
   final String text;
   final IconData icon;
+  final Widget? page;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton({super.key, required this.text, required this.icon});
+  QuickLinkButton({super.key, required this.text, required this.icon, this.page});
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +232,15 @@ class QuickLinkButton extends StatelessWidget {
           icon: Icon(icon),
           onPressed: () {
             // Handle quick link button press
-          },
+             if (page != null) {
+               Navigator.push(context, MaterialPageRoute(
+              builder: 
+              (context) => page as Widget,
+              ),
+              );
+             }
+
+              },
         ),
         Text(text),
       ],
