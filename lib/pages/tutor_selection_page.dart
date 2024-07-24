@@ -1,39 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/models/courses_models.dart';
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:course_correct/models/courses_models.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-final List<String> subjects = [];
-Future<List<CoursesModel>> getCourses() async {
-  var snap = await FirebaseFirestore.instance.collection("Courses ").get();
-  return CoursesModel.listFromFirestore(snap);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: TutorAvailabilityPage(),
+    );
+  }
+}
+
+// class CoursesModel {
+//   String name;
+
+//   CoursesModel({
+//     required this.name,
+//   });
+
+//   factory CoursesModel.fromFirestore(DocumentSnapshot doc) {
+//     Map data = doc.data() as Map<String, dynamic>;
+//     return CoursesModel(
+//       name: data['name'],
+//     );
+//   }
+
+//   static List<CoursesModel> listFromFirestore(QuerySnapshot snapshot) {
+//     return snapshot.docs.map((doc) {
+//       return CoursesModel.fromFirestore(doc);
+//     }).toList();
+//   }
+// }
 
 class TutorAvailabilityPage extends StatefulWidget {
   @override
   _TutorAvailabilityPageState createState() => _TutorAvailabilityPageState();
 }
 
-Future<void> populateSubjects() async {
-    List<CoursesModel> courses = await getCourses();
-    while (subjects.isEmpty) {
-  for (var course in courses) {
-    subjects.add(course.name);
-  }
-  //update selected subjects map
-  for (var subject in subjects) {
-    selectedSubjects[subject] = false;
-  }
-}
-  }
-
-final Map<String, bool> selectedSubjects = {};
-
 class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
-  //list of courses
-
-
+  final Map<String, bool> selectedSubjects = {};
   final Map<String, bool> selectedDays = {
     'Monday': false,
     'Tuesday': false,
@@ -46,6 +60,16 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
 
   TimeOfDay? startTime;
   TimeOfDay? endTime;
+
+  Future<List<CoursesModel>> fetchCourses() async {
+  try {
+    var snap = await FirebaseFirestore.instance.collection("Courses ").get();
+    return CoursesModel.listFromFirestore(snap);
+  } catch (e) {
+    print("Error fetching courses: $e");
+    return [];
+  }
+}
 
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -63,7 +87,36 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
     }
   }
 
-  
+Future<void> submitTutorInfo() async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    try {
+      // Fetch the current data
+      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
+
+      // Prepare the new data to be merged
+      Map<String, dynamic> newData = {
+        'role': 'tutor',
+        'subjects': selectedSubjects.keys.where((key) => selectedSubjects[key] == true).toList(),
+        'days': selectedDays.keys.where((key) => selectedDays[key] == true).toList(),
+        'startTime': startTime != null ? startTime!.format(context) : '',
+        'endTime': endTime != null ? endTime!.format(context) : '',
+      };
+
+      // Merge existing data with new data
+      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+        ...existingData,
+        ...newData,
+      }, SetOptions(merge: true));
+
+    } catch (e) {
+      print("Error updating tutor info: $e");
+    }
+  }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +134,40 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
               'Select Subjects You Want to Teach',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            const Expanded(
-              child: Subjects(),
+            Expanded(
+              child: FutureBuilder<List<CoursesModel>>(
+                future: fetchCourses(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    );
+                  } else if (snapshot.hasData) {
+                    final courses = snapshot.data!;
+                    return ListView(
+                      children: courses.map((course) {
+                        return CheckboxListTile(
+                          title: Text(course.name),
+                          value: selectedSubjects[course.name] ?? false,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              selectedSubjects[course.name] = value ?? false;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text('No subjects available'),
+                    );
+                  }
+                },
+              ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -145,12 +230,14 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: () {
-                  // Handle form submission
+                onPressed: () async {
+                  await submitTutorInfo();
                   Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TutorHomepage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TutorHomepage(),
+                    ),
+                  );
                 },
                 child: const Text('Submit'),
               ),
@@ -162,69 +249,3 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
   }
 }
 
-class Subjects extends StatefulWidget {
-  const Subjects({
-    super.key,
-  });
-
-  @override
-  State<Subjects> createState() => _SubjectsState();
-}
-
-class _SubjectsState extends State<Subjects> {
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: populateSubjects(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Center(
-            child: Text('Error: ${snapshot.error}'),
-          );
-        } else {
-         return SubjectSelection(
-            selectedSubjects: selectedSubjects,
-            subjects: subjects,
-         );
-        }
-      },
-    );
-  }
-}
-
-class SubjectSelection extends StatefulWidget {
-  final selectedSubjects;
-  final subjects;
-  const SubjectSelection({super.key, this.selectedSubjects, this.subjects});
-
-  @override
-  _SubjectSelectionState createState() => _SubjectSelectionState();
-}
-
-class _SubjectSelectionState extends State<SubjectSelection> {
-  @override
-  Widget build(BuildContext context) {
-    List<String> subjects = widget.subjects;
-    Map<String, bool> selectedSubjects = widget.selectedSubjects;
-    return MultiSelectDialogField(
-      title: const Text('Subjects'),
-      backgroundColor: Colors.white,
-      buttonText: const Text('Subjects'),
-      dialogHeight: 200,
-      items: subjects
-          .map((subject) => MultiSelectItem<String>(subject, subject))
-          .toList(),
-      onConfirm: (value) {
-        setState(() {
-          //remove the item from the selected list if it is already selected
-          selectedSubjects.remove(value);
-        });
-        
-      },
-    );
-  }
-}

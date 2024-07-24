@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/pages/login_page.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,11 +13,13 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   late final TextEditingController _email;
   late final TextEditingController _password;
+  late final TextEditingController _name; 
 
   @override
   void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
+    _name = TextEditingController(); 
 
     super.initState();
   }
@@ -26,7 +28,19 @@ class _RegisterPageState extends State<RegisterPage> {
   void dispose() {
     _email.dispose();
     _password.dispose();
+    _name.dispose(); 
     super.dispose();
+  }
+
+  Future<void> _addStudentToFirestore(String uid, String name) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null){
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'email': _email.text,
+      'name': _name.text, 
+      'created_at': FieldValue.serverTimestamp(),
+    });
+  }
   }
 
   @override
@@ -40,32 +54,41 @@ class _RegisterPageState extends State<RegisterPage> {
           child: ListView(
             shrinkWrap: true,
             children: [
-               Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(
-                    height: 150,
-                  ),
-                  const Text(
-                    'Course Correct',
-                    style: TextStyle(
-                      fontSize: 25,
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontFamily: 'Arial',
-                      fontWeight: FontWeight.w900,
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const SizedBox(height: 150),
+                    const Text(
+                      'Course Correct',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontFamily: 'Arial',
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
+                    Image.asset(
+                      'assets/icons/campus_connect_logo.png',
+                      height: 100,
+                      width: 100,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _name,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: defaultTextStyle,
+                  prefixIcon: Icon(Icons.person),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black, width: 5.0),
                   ),
-                  Image.asset(
-                'assets/icons/campus_connect_logo.png',
-                height: 100,
-                width: 100,
+                ),
               ),
-                ],
-              )),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: _email,
                 autocorrect: false,
@@ -79,9 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               TextField(
                 controller: _password,
                 obscureText: true,
@@ -95,9 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       borderSide: BorderSide(color: Colors.black, width: 5.0),
                     )),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               const TextField(
                 decoration: InputDecoration(
                     labelText: 'Confirm Password',
@@ -108,24 +127,28 @@ class _RegisterPageState extends State<RegisterPage> {
                     )),
                 obscureText: true,
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
                   final email = _email.text;
                   final password = _password.text;
+                  final name = _name.text;
                   //create user exception handling coming in later
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email, password: password);
-                  Navigator.pushNamed(context, '/landingpage');
-                  // //print(userCredential);
-                  // //sending a verification email
+
+                  try {
+                    final userCredential = await FirebaseAuth.instance
+                        .createUserWithEmailAndPassword(
+                            email: email, password: password);
+                    await _addStudentToFirestore(userCredential.user!.uid, name);
+                    Navigator.pushNamed(context, '/landingpage');
+                  } catch (e) {
+                    print("Error: $e");
+                  }
                 },
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(
+                  backgroundColor: MaterialStateProperty.all(
                       Color.fromARGB(255, 0, 0, 0)),
-                  shape: WidgetStateProperty.all(
+                  shape: MaterialStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -168,6 +191,4 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
-  //function to show a pop up date picker
 }
