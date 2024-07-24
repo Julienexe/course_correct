@@ -1,45 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/main.dart';
 import 'package:course_correct/models/courses_models.dart';
+import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TutorAvailabilityPage(),
-    );
-  }
-}
 
-// class CoursesModel {
-//   String name;
-
-//   CoursesModel({
-//     required this.name,
-//   });
-
-//   factory CoursesModel.fromFirestore(DocumentSnapshot doc) {
-//     Map data = doc.data() as Map<String, dynamic>;
-//     return CoursesModel(
-//       name: data['name'],
-//     );
-//   }
-
-//   static List<CoursesModel> listFromFirestore(QuerySnapshot snapshot) {
-//     return snapshot.docs.map((doc) {
-//       return CoursesModel.fromFirestore(doc);
-//     }).toList();
-//   }
-// }
 
 class TutorAvailabilityPage extends StatefulWidget {
   @override
@@ -109,9 +78,13 @@ Future<void> submitTutorInfo() async {
         ...existingData,
         ...newData,
       }, SetOptions(merge: true));
+      appState.setUserProfile(UserModel(
+        name: existingData['name'],
+        role: 'tutor',
+      ));
 
     } catch (e) {
-      print("Error updating tutor info: $e");
+      appState.snackBarMessage(e.toString(), context);
     }
   }
 }
@@ -232,11 +205,12 @@ Future<void> submitTutorInfo() async {
               child: ElevatedButton(
                 onPressed: () async {
                   await submitTutorInfo();
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const TutorHomepage(),
                     ),
+                    (route) => false,
                   );
                 },
                 child: const Text('Submit'),
