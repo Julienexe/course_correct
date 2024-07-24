@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -19,7 +17,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
   DateTime? _selectedDay;
   final String _userName = appState.userProfile?.name ?? 'Tutor';
 
-  @override
   // Function to handle logout action
   void _handleLogout(BuildContext context) {
     // Clear any stored authentication tokens or session data
