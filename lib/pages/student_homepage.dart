@@ -24,25 +24,7 @@ class StudentHomepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Student Homepage'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.message),
-            onPressed: () {
-              // Navigate to messages
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              // Navigate to profile
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/profilepage');
-            },
-          ),
-        ],
-      ),
+      appBar: studentAppBar(context),
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
@@ -173,6 +155,28 @@ class StudentHomepage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  AppBar studentAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Student Homepage'),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.message),
+          onPressed: () {
+            // Navigate to messages
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.person),
+          onPressed: () {
+            // Navigate to profile
+            Navigator.pop(context);
+            Navigator.pushNamed(context, '/profilepage');
+          },
+        ),
+      ],
     );
   }
 }
