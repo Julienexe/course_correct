@@ -1,6 +1,7 @@
 import 'package:course_correct/appstate/app_state.dart';
 import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/landing_page.dart';
+import 'package:course_correct/pages/student_booking_page.dart';
 import 'package:course_correct/pages/student_homepage.dart';
 import 'package:course_correct/pages/tutor_appointments.dart';
 import 'package:course_correct/pages/tutor_selection_page.dart';
@@ -12,8 +13,8 @@ import 'package:course_correct/pages/profile_page.dart';
 import 'package:course_correct/pages/test_page.dart';
 import 'package:provider/provider.dart';
 
-
 late AppState appState;
+
 void main() async {
   appState = AppState();
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,10 +38,9 @@ class MyApp extends StatelessWidget {
           '/landingpage': (context) => LandingPage(),
           '/appointments': (context) => TutorAppointments(),
           '/students': (context) => TutorStudents(),
-          // ignore: equal_keys_in_map
           '/appointments': (context) => AppointmentsPage(),
-          // '/settingspage': (context) => SettingsPage(), 
-          '/tutorAvailabilityPage' : (context) => TutorAvailabilityPage(),
+          '/tutorAvailabilityPage': (context) => TutorAvailabilityPage(),
+          '/tutorBookingPage': (context) => TutorBookingPage(),
         },
         theme: ThemeData(
           primarySwatch: Colors.cyan,
@@ -52,13 +52,23 @@ class MyApp extends StatelessWidget {
                 TextStyle(fontFamily: 'Schyler', fontWeight: FontWeight.bold),
           ),
         ),
-        home: Builder(
-            
-            builder: (context) {
-              appState.user = FirebaseAuth.instance.currentUser;
-              return const TestPage();
-            }),
+        home: Builder(builder: (context) {
+          appState.user = FirebaseAuth.instance.currentUser;
+          return const TestPage();
+        }),
       ),
     );
   }
+}
+
+class StudentBookingPageArguments {
+  final String tutorId;
+  final DateTime selectedStartTime;
+  final DateTime selectedEndTime;
+
+  StudentBookingPageArguments({
+    required this.tutorId,
+    required this.selectedStartTime,
+    required this.selectedEndTime,
+  });
 }

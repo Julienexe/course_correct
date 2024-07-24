@@ -1,3 +1,4 @@
+import 'package:course_correct/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,10 @@ class RoleSelectionPage extends StatelessWidget {
     if (user != null) {
       try {
         // Fetch the current data
-        DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+        DocumentSnapshot doc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
         Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
 
         // Prepare the new data to be merged
@@ -44,7 +48,7 @@ class RoleSelectionPage extends StatelessWidget {
                 role: 'Student',
                 onTap: () async {
                   await updateUserRole('student');
-                  Navigator.pushNamed(context, '/studentHomepage');
+                  Navigator.pushNamed(context, '/tutorBookingPage',);
                 },
               ),
               const SizedBox(height: 50),
