@@ -1,12 +1,15 @@
 import 'package:course_correct/main.dart';
+import 'package:course_correct/models/user_model.dart';
+import 'package:course_correct/pages/student_homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 
-  Future<void> updateUserRole(String role) async {
+  Future<void> updateUserRole(String role, BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
@@ -19,8 +22,7 @@ class RoleSelectionPage extends StatelessWidget {
 
         // Prepare the new data to be merged
         Map<String, dynamic> newData = {
-          'role': role,
-          'isEnrolled': false, // Assuming initial enrollment status is false
+          'role': role, // Assuming initial enrollment status is false
         };
 
         // Merge existing data with new data
@@ -28,8 +30,14 @@ class RoleSelectionPage extends StatelessWidget {
           ...existingData,
           ...newData,
         }, SetOptions(merge: true));
+
+        // Update the user profile in the app state
+        appState.setUserProfile(UserModel(
+          name: existingData['name'],
+          role: role,
+        ));
       } catch (e) {
-        print("Error updating user role: $e");
+        appState.snackBarMessage(e.toString(), context);
       }
     }
   }
@@ -37,6 +45,7 @@ class RoleSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -47,15 +56,19 @@ class RoleSelectionPage extends StatelessWidget {
               RoleSelectionButton(
                 role: 'Student',
                 onTap: () async {
-                  await updateUserRole('student');
-                  Navigator.pushNamed(context, '/tutorBookingPage',);
+                  await updateUserRole('student', context);
+                  Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const StudentHomepage(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 50),
               RoleSelectionButton(
                 role: 'Tutor',
                 onTap: () async {
-                  await updateUserRole('tutor');
+                  await updateUserRole('tutor', context);
                   Navigator.pushNamed(context, '/tutorAvailabilityPage');
                 },
               ),
