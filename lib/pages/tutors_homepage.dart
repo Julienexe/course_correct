@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,26 +17,9 @@ class _TutorHomepageState extends State<TutorHomepage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  String _userName = 'Loading...';
+  final String _userName = appState.userProfile?.name ?? 'Tutor';
 
   @override
-  void initState() {
-    super.initState();
-    _fetchUserName();
-    }
-
-  Future<void> _fetchUserName() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      if (userDoc.exists) {
-        setState(() {
-          _userName = userDoc.data()?['name'] ?? 'No name';
-        });
-      }
-    }
-  }
- 
   // Function to handle logout action
   void _handleLogout(BuildContext context) {
     // Clear any stored authentication tokens or session data
