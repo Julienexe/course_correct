@@ -8,6 +8,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 
+// int current_page = 0;
+
+//   List<Widget> pages = [
+//       Topics(),
+//       SubTopics(name: name),
+//       DaysOfTheWeek(),
+//       TimeSelection()
+//     ];
+
 class TutorAvailabilityPage extends StatefulWidget {
   @override
   _TutorAvailabilityPageState createState() => _TutorAvailabilityPageState();
@@ -85,167 +94,56 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
 
   @override
   Widget build(BuildContext context) {
+    return Questions();
+  }
+}
+
+class Questions extends StatefulWidget {
+  const Questions({
+    super.key,
+  });
+
+  @override
+  State<Questions> createState() => _QuestionsState();
+}
+
+class _QuestionsState extends State<Questions> {
+  int current_page = 0;
+
+  void _nextPage() {
+    setState(() {
+      current_page++;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    final courseName = appState.courseName;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Tutor Availability'),
       ),
-      body: const Topics(),
-      //Padding(
-      //     padding: const EdgeInsets.all(16.0),
-      //     child: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: <Widget>[
-      //         const Text(
-      //           'Select Subjects You Want to Teach',
-      //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      //         ),
-      //         Expanded(
-      //           child: FutureBuilder<List<CoursesModel>>(
-      //             future: fetchCourses(
-      //                 FirebaseFirestore.instance.collection("Courses ")),
-      //             builder: (context, snapshot) {
-      //               if (snapshot.connectionState == ConnectionState.waiting) {
-      //                 return const Center(
-      //                   child: CircularProgressIndicator(),
-      //                 );
-      //               } else if (snapshot.hasError) {
-      //                 return Center(
-      //                   child: Text('Error: ${snapshot.error}'),
-      //                 );
-      //               } else if (snapshot.hasData) {
-      //                 final courses = snapshot.data!;
-      //                 return ListView(
-      //                   children: courses.map((course) {
-      //                     return CheckboxListTile(
-      //                       title: Text(course.name),
-      //                       value: selectedSubjects[course.name] ?? false,
-      //                       onChanged: (bool? value) {
-      //                         setState(() {
-      //                           selectedSubjects[course.name] = value ?? false;
-      //                         });
-      //                       },
-      //                     );
-      //                   }).toList(),
-      //                 );
-      //               } else {
-      //                 return const Center(
-      //                   child: Text('No subjects available'),
-      //                 );
-      //               }
-      //             },
-      //           ),
-      //         ),
-      //         const SizedBox(height: 20),
-      //         const Text(
-      //           'Select Your Available Days',
-      //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      //         ),
-      //         Expanded(
-      //           child: ListView(
-      //             children: selectedDays.keys.map((day) {
-      //               return Card(
-      //                 shape: RoundedRectangleBorder(
-      //                   borderRadius: BorderRadius.circular(15),
-      //                 ),
-      //                 elevation: 5,
-      //                 margin: const EdgeInsets.symmetric(vertical: 8),
-      //                 child: CheckboxListTile(
-      //                   title: Text(day),
-      //                   value: selectedDays[day],
-      //                   onChanged: (bool? value) {
-      //                     setState(() {
-      //                       selectedDays[day] = value ?? false;
-      //                     });
-      //                   },
-      //                 ),
-      //               );
-      //             }).toList(),
-      //           ),
-      //         ),
-      //         const SizedBox(height: 20),
-      //         const Text(
-      //           'Select Your Available Hours',
-      //           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-      //         ),
-      //         Card(
-      //           shape: RoundedRectangleBorder(
-      //             borderRadius: BorderRadius.circular(15),
-      //           ),
-      //           elevation: 5,
-      //           child: Padding(
-      //             padding: const EdgeInsets.all(16.0),
-      //             child: Row(
-      //               children: <Widget>[
-      //                 TextButton(
-      //                   onPressed: () => _selectTime(context, true),
-      //                   child: Text(startTime == null
-      //                       ? 'Start Time'
-      //                       : startTime!.format(context)),
-      //                 ),
-      //                 const Text(' to '),
-      //                 TextButton(
-      //                   onPressed: () => _selectTime(context, false),
-      //                   child: Text(endTime == null
-      //                       ? 'End Time'
-      //                       : endTime!.format(context)),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         ),
-      //         const SizedBox(height: 20),
-      //         Center(
-      //           child: ElevatedButton(
-      //             onPressed: () async {
-      //               await submitTutorInfo();
-      //               Navigator.pushAndRemoveUntil(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                   builder: (context) => const TutorHomepage(),
-      //                 ),
-      //                 (route) => false,
-      //               );
-      //             },
-      //             child: const Text('Submit'),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ),
+      body: Center(
+        child: IndexedStack(
+          index: current_page,
+          children: [
+            CoursesBuilder(
+              future: getCourses(),
+              next:_nextPage,
+            ),
+            CoursesBuilder(
+              future: fetchSubs(courseName),
+              next: _nextPage,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
 //new page widgets
-class Topics extends StatelessWidget {
-  const Topics({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    final courseName = appState.courseName;
-    return CoursesBuilder(
-      future: getCourses(),
-      next: SubTopics(name:courseName),
-      isSub: false,
-      name: courseName,
-    );
-  }
-}
-
-class SubTopics extends StatelessWidget {
-  final String? name;
-  const SubTopics({super.key, required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return CoursesBuilder(
-      future: fetchSubs(name),
-      next: const DaysOfTheWeek(),
-      isSub: true,
-    );
-  }
-}
 
 Future<List<CoursesModel>> fetchCourses(dbRef) async {
   try {
@@ -270,10 +168,14 @@ Future<List<CoursesModel>> fetchSubs(String? name) {
 
 class CoursesBuilder extends StatelessWidget {
   final Future<Object?>? future;
-  final Widget? next;
-  final bool? isSub;
-  final String? name;
-  const CoursesBuilder({super.key, this.future, this.next, this.isSub, this.name});
+  final Function next;
+  
+  CoursesBuilder(
+      {super.key,
+      this.future,
+      required this.next,
+      
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -290,37 +192,28 @@ class CoursesBuilder extends StatelessWidget {
           final listItems = data
               .map((e) => CheckListCard(title: Text(e.name), value: e.name))
               .toList();
-          return Center(
-            child: Card(
-              elevation: 3,
-              child: SizedBox(
-                height: 400,
-                child: MultiSelectCheckList(
-                    maxSelectableCount: 1,
-                    items: listItems,
-                    onChange: (allSelected, selectedItem) {
-                      //do something with the selected item
-                      //appState.setCourseName(selectedItem);
-                      if (next != null) {
-                        if (isSub == true) {
-                          //appState.setCourseName(selectedItem);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => next!),
-                          );
-                        } else {
-                          //appState.setCourseName(selectedItem);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SubTopics(name: name)),
-                          );
-                        }
-                      }
-                    }),
-              ),
-            ),
-          );
+          return SelectCard(listItems, context, next);
         });
+  }
+
+  Center SelectCard(
+      List<CheckListCard<String>> listItems, BuildContext context, Function next) {
+    return Center(
+      child: Card(
+        elevation: 3,
+        child: SizedBox(
+          height: 400,
+          child: MultiSelectCheckList(
+              maxSelectableCount: 1,
+              items: listItems,
+              onChange: (allSelected, selectedItem) {
+                //do something with the selected item
+                //appState.setCourseName(selectedItem);
+                next();
+              }),
+        ),
+      ),
+    );
   }
 }
 
