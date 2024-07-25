@@ -14,6 +14,8 @@ dependencies:
     sdk: flutter
   http: ^1.2.1
   flutter_dotenv: ^5.0.2
+  flutter_local_notifications: ^17.2.1+2
+  permission_handler: ^11.3.1
   
 
 

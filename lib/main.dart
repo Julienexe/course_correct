@@ -12,12 +12,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:course_correct/pages/profile_page.dart';
 import 'package:course_correct/pages/test_page.dart';
 import 'package:provider/provider.dart';
+import 'package:course_correct/services/notification_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 late AppState appState;
+
+Future<void> requestNotificationPermission() async {
+  final status = await Permission.notification.request();
+  if (status.isGranted) {
+    print('Notification permission granted.');
+  } else {
+    print('Notification permission denied.');
+  }
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await NotificationService().init();
+  await requestNotificationPermission();
 
   appState = AppState();
   runApp(const MyApp());

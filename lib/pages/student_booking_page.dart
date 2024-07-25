@@ -1,3 +1,4 @@
+import 'package:course_correct/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -51,76 +52,91 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
   }
 
   Future<void> bookSession(String studentId, String tutorId, DateTime startTime, DateTime endTime) async {
-    setState(() {
-      _isLoading = true; // Set loading state to true
-    });
+  setState(() {
+    _isLoading = true; // Set loading state to true
+  });
 
-    try {
-      final now = DateTime.now();
+  try {
+    final now = DateTime.now();
 
-      // Ensure the booking is exactly one hour
-      if (endTime.difference(startTime) != Duration(hours: 1)) {
-        throw Exception('Booking must be exactly one hour.');
-      }
-
-      // Check if the student has already booked this tutor for this time slot
-      final existingBookings = await FirebaseFirestore.instance
-          .collection('bookings')
-          .where('studentId', isEqualTo: studentId)
-          .where('tutorId', isEqualTo: tutorId)
-          .where('startTime', isEqualTo: startTime)
-          .get();
-
-      if (existingBookings.docs.isNotEmpty) {
-        throw Exception('You have already booked this slot.');
-      }
-
-      // Check if the tutor is available for this time slot
-      final tutorData = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(tutorId)
-          .get();
-
-      final availableStartTime = DateTime(
-        now.year, now.month, now.day,
-        int.parse(tutorData['startTime'].split(':')[0]),
-        int.parse(tutorData['startTime'].split(':')[1].split(' ')[0]),
-      );
-
-      final availableEndTime = DateTime(
-        now.year, now.month, now.day,
-        int.parse(tutorData['endTime'].split(':')[0]),
-        int.parse(tutorData['endTime'].split(':')[1].split(' ')[0]),
-      );
-
-      if (startTime.isBefore(availableStartTime) || endTime.isAfter(availableEndTime)) {
-        throw Exception('Selected time slot is out of the tutor\'s available hours.');
-      }
-
-      // Check if the student has reached the monthly booking limit for this tutor
-      if (await canBookSessionThisMonth(studentId, tutorId)) {
-        await FirebaseFirestore.instance.collection('bookings').add({
-          'studentId': studentId,
-          'tutorId': tutorId,
-          'startTime': startTime,
-          'endTime': endTime,
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Session booked successfully!')),
-        );
-      } else {
-        throw Exception('Booking limit reached for this month');
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error booking session: $e')),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false; // Set loading state to false after booking
-      });
+    // Ensure the booking is exactly one hour
+    if (endTime.difference(startTime) != Duration(hours: 1)) {
+      throw Exception('Booking must be exactly one hour.');
     }
+
+    // Check if the student has already booked this tutor for this time slot
+    final existingBookings = await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('studentId', isEqualTo: studentId)
+        .where('tutorId', isEqualTo: tutorId)
+        .where('startTime', isEqualTo: startTime)
+        .get();
+
+    if (existingBookings.docs.isNotEmpty) {
+      throw Exception('You have already booked this slot.');
+    }
+
+    // Check if the tutor is available for this time slot
+    final tutorData = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(tutorId)
+        .get();
+
+    final availableStartTime = DateTime(
+      now.year, now.month, now.day,
+      int.parse(tutorData['startTime'].split(':')[0]),
+      int.parse(tutorData['startTime'].split(':')[1].split(' ')[0]),
+    );
+
+    final availableEndTime = DateTime(
+      now.year, now.month, now.day,
+      int.parse(tutorData['endTime'].split(':')[0]),
+      int.parse(tutorData['endTime'].split(':')[1].split(' ')[0]),
+    );
+
+    if (startTime.isBefore(availableStartTime) || endTime.isAfter(availableEndTime)) {
+      throw Exception('Selected time slot is out of the tutor\'s available hours.');
+    }
+
+    // Check if the student has reached the monthly booking limit for this tutor
+    if (await canBookSessionThisMonth(studentId, tutorId)) {
+      await FirebaseFirestore.instance.collection('bookings').add({
+        'studentId': studentId,
+        'tutorId': tutorId,
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+
+      // Show custom floating notification
+      CustomFloatingNotification.show(context, 'Session booked successfully!');
+
+      // Show status bar notification
+      NotificationService().showNotification(
+        id: 1,
+        title: 'Booking Confirmed',
+        body: 'Your session with tutor $tutorId has been booked successfully.',
+      );
+
+    } else {
+      throw Exception('Booking limit reached for this month');
+    }
+  } catch (e) {
+    // Show custom floating notification for errors
+    CustomFloatingNotification.show(context, 'Error: $e');
+
+    // Optionally, show a status bar notification for errors
+    NotificationService().showNotification(
+      id: 2,
+      title: 'Booking Error',
+      body: 'Failed to book session: $e',
+    );
+  } finally {
+    setState(() {
+      _isLoading = false; // Set loading state to false after booking
+    });
   }
+}
+
 
   // Function to generate one-hour slots
   List<DateTime> generateTimeSlots(DateTime start, DateTime end) {
