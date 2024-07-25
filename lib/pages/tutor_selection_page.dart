@@ -94,7 +94,7 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Questions();
+    return const Questions();
   }
 }
 
@@ -124,25 +124,35 @@ class _QuestionsState extends State<Questions> {
         title: const Text('Tutor Availability'),
       ),
       body: Center(
-        child: IndexedStack(
-          index: current_page,
-          children: [
-            CoursesBuilder(
-              future: getCourses(),
-              next:_nextPage,
-            ),
-            CoursesBuilder(
-              future: fetchSubs(courseName),
-              next: _nextPage,
-            ),
-          ],
+        child: Container(
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          child: IndexedStack(
+            index: current_page,
+            children: [
+              //courses
+              CoursesBuilder(
+                future: getCourses(),
+                next:_nextPage,
+              ),
+              //subtopics
+              CoursesBuilder(
+                future: fetchSubs(courseName),
+                next: _nextPage,
+              ),
+              DaysOfTheWeek(next: _nextPage),
+              const TimeSelection(),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-//new page widgets
+//Functions to fetch topics and subtopics
 
 
 Future<List<CoursesModel>> fetchCourses(dbRef) async {
@@ -208,7 +218,7 @@ class CoursesBuilder extends StatelessWidget {
               items: listItems,
               onChange: (allSelected, selectedItem) {
                 //do something with the selected item
-                //appState.setCourseName(selectedItem);
+                appState.setCourseName(selectedItem);
                 next();
               }),
         ),
@@ -218,7 +228,8 @@ class CoursesBuilder extends StatelessWidget {
 }
 
 class DaysOfTheWeek extends StatelessWidget {
-  const DaysOfTheWeek({super.key});
+  final Function next;
+  const DaysOfTheWeek({super.key, required this.next});
 
   @override
   Widget build(BuildContext context) {
@@ -250,11 +261,7 @@ class DaysOfTheWeek extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     // Navigate to next page
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const TimeSelection()),
-                    );
+                   next();
                   },
                   child: const Text('Next'),
                 ),
