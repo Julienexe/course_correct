@@ -40,7 +40,7 @@ class AppState extends ChangeNotifier {
     setUser(FirebaseAuth.instance.currentUser);
     setUserProfile(await readUserProfileFromFirestore());
   }
-  
+
   //user related functions
   void setUser(User? user) {
     this.user = user;
@@ -107,7 +107,7 @@ class AppState extends ChangeNotifier {
   Future<void> loginSequence(
       String email, String password, BuildContext context) async {
     try {
-       ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
         children: [
           Text(
@@ -164,7 +164,7 @@ class AppState extends ChangeNotifier {
   Future<void> registerSequence(
       String email, String password, String name, BuildContext context) async {
     try {
-       ScaffoldMessenger.of(context).showSnackBar( SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Row(
         children: [
           Text(
@@ -204,6 +204,28 @@ class AppState extends ChangeNotifier {
   void setCourseName(String courseName) {
     this.courseName = courseName;
     notifyListeners();
+  }
+
+  Future<List<CoursesModel>> fetchCourses(dbRef) async {
+    try {
+      var snap = await dbRef.get();
+      return CoursesModel.listFromFirestore(snap);
+    } catch (e) {
+      //print("Error fetching courses: $e");
+      return [];
+    }
+  }
+
+  Future<List<CoursesModel>> getCourses() async {
+    return await fetchCourses(
+        FirebaseFirestore.instance.collection("Courses "));
+  }
+
+  Future<List<CoursesModel>> fetchSubs(String? name) {
+    return fetchCourses(FirebaseFirestore.instance
+        .collection("Courses ")
+        .doc(name)
+        .collection("subs"));
   }
 
   snackBarMessage(String text, BuildContext context) {
