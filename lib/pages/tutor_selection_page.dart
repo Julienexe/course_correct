@@ -55,7 +55,6 @@ class _QuestionsState extends State<Questions> {
 
   @override
   Widget build(BuildContext context) {
-    final courseName = appState.courseName;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -180,11 +179,11 @@ class SubTopics extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Incomplete Selection'),
-                                content: Text('Please select all options for all 5 sub topics.'),
+                                title: const Text('Incomplete Selection'),
+                                content: const Text('Please select all options for all 5 sub topics.'),
                                 actions: [
                                   TextButton(
-                                    child: Text('OK'),
+                                    child: const Text('OK'),
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
@@ -411,17 +410,20 @@ Future<void> submitTutorInfo(
 
       // Prepare the new data to be merged
       Map<String, dynamic> newData = {
+        "name": existingData['name'],
+        "email":existingData['email'],
         'role': 'tutor',
         'subjects': selectedSubject,
         "subtopics": subsRating,
         'days': days,
         'startTime': startTime.toString(),
         'endTime': endTime.toString(),
+        "availability":1,
+        "experience":1,
       };
 
       // Merge existing data with new data
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        ...existingData,
+      await FirebaseFirestore.instance.collection('tutors').doc(user.uid).set({
         ...newData,
       }, SetOptions(merge: true));
       appState.setUserProfile(UserModel(
