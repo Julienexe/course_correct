@@ -1,6 +1,7 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutors/fancy_questionnaire.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,13 @@ class RoleSelectionPage extends StatelessWidget {
                 role: 'Tutor',
                 onTap: () async {
                   await updateUserRole('tutor', context);
-                  Navigator.pushNamed(context, '/tutorAvailabilityPage');
+                 // Navigator.pushNamed(context, '/tutorAvailabilityPage');
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>ConcentricAnimationOnboarding()
+                    ),
+                  );
                 },
               ),
             ],

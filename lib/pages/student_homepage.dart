@@ -1,6 +1,7 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/topic_selection_page.dart';
+import 'package:course_correct/pages/tutors/tutor_sorting.dart';
 import 'package:flutter/material.dart';
 
 class StudentHomepage extends StatelessWidget {
@@ -14,7 +15,7 @@ class StudentHomepage extends StatelessWidget {
     // Navigate to the login screen
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false, // This prevents going back to the previous screen
     );
   }
@@ -45,6 +46,12 @@ class StudentHomepage extends StatelessWidget {
               title: const Text('Find a Tutor'),
               onTap: () {
                 // Navigate to find a tutor
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>const TutorSorting(),
+                  ),
+                );
               },
             ),
             ListTile(

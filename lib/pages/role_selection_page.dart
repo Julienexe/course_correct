@@ -1,3 +1,5 @@
+import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutors/fancy_questionnaire.dart';
 import 'package:flutter/material.dart';
 import 'topic_selection_page.dart';
 import 'zoom_service.dart';
@@ -25,9 +27,7 @@ class RoleSelectionPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TopicSelectionPage(
-                        studentId: '',
-                      ),
+                      builder: (context) => StudentHomepage()
                     ),
                   );
                 },
@@ -36,14 +36,11 @@ class RoleSelectionPage extends StatelessWidget {
               RoleSelectionButton(
                 role: 'Tutor',
                 onTap: () async {
-                  await _zoomService.createMeeting(
-                    topic: 'Tutor Meeting',
-                    startTime: DateTime.now().toUtc().toIso8601String(),
-                  );
-
-                  await _textbeltService.sendSms(
-                    '+1234567890', // Replace with the actual phone number
-                    'Welcome to Course Correct!',
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConcentricAnimationOnboarding()
+                    ),
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(
