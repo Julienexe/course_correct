@@ -7,9 +7,10 @@ import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/landing_page.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/student_homepage.dart';
-import 'package:course_correct/pages/tutors_homepage.dart';
+import 'package:course_correct/pages/Tutors_homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 
 class AppState extends ChangeNotifier {
   bool animationcomplete = false;
@@ -55,54 +56,18 @@ class AppState extends ChangeNotifier {
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }
 
-  void registerTutorOnFirestore(TutorModel tutor) {
+  void registerTutorOnFirestore(TutorModel Tutor) {
     FirebaseFirestore.instance
-        .collection('tutors')
+        .collection('Tutors')
         .doc(user!.uid)
-        .set(tutor.toFirestore());
+        .set(Tutor.toFirestore());
   }
 
-  Future<TutorModel?> getTutor() async {
-    final tutorRef = FirebaseFirestore.instance
-        .collection('tutors')
-        .doc(user!.uid)
-        .withConverter(
-            fromFirestore: TutorModel.fromFirestore,
-            toFirestore: (TutorModel tutor, _) => tutor.toFirestore());
-    final tutorSnap = await tutorRef.get();
-    final tutor = tutorSnap.data();
-    return tutor;
-  }
-
-  //function to get all tutors
-  Future<List<TutorModel>> getAllTutors() async {
-    final tutorsRef = FirebaseFirestore.instance
-        .collection('tutors')
-        .withConverter(
-          fromFirestore: (snapshot, _) => TutorModel.fromFirestore(
-              snapshot.data()! as DocumentSnapshot<Map<String, dynamic>>, _),
-          toFirestore: (tutor, _) => tutor.toFirestore(),
-        );
-    final tutorsSnap = await tutorsRef.get();
-    final tutors = tutorsSnap.docs.map((doc) => doc.data()).toList();
-    return tutors;
-  }
+  //function to get all Tutors
 
   void usertoFirebase(bool isTutor) {
     FirebaseFirestore.instance.collection('users').doc(user!.uid).set({});
   }
-
-  // Future<void> addStudentToFirestore(String uid, String name) async {
-  //   User? user = FirebaseAuth.instance.currentUser;
-  //   if (user != null){
-  //   await FirebaseFirestore.instance.collection('users').doc(uid).set({
-  //     'email': user.email,
-  //     'name': name,
-  //     'created_at': FieldValue.serverTimestamp(),
-  //     'role': 'student',
-  //   });
-  // }
-  // }
 
   Future<void> loginSequence(
       String email, String password, BuildContext context) async {
@@ -125,7 +90,7 @@ class AppState extends ChangeNotifier {
         setUser(user);
         userProfile = await readUserProfileFromFirestore();
         notifyListeners();
-        if (userProfile!.role == 'tutor') {
+        if (userProfile!.role == 'Tutor') {
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => const TutorHomepage()));
         } else if (userProfile!.role == 'student') {
@@ -143,7 +108,7 @@ class AppState extends ChangeNotifier {
 
   Future<UserModel?> readUserProfileFromFirestore() async {
     user = FirebaseAuth.instance.currentUser;
-    String userUid = user!.uid;
+    String userUid = user?.uid ?? '';
     if (user != null) {
       final userRef = FirebaseFirestore.instance
           .collection('users')
@@ -218,7 +183,7 @@ class AppState extends ChangeNotifier {
 
   Future<List<CoursesModel>> getCourses() async {
     return await fetchCourses(
-        FirebaseFirestore.instance.collection("Courses "));
+        FirebaseFirestore.instance.collection('Courses '));
   }
 
   Future<List<CoursesModel>> fetchSubs(String? name) {
@@ -226,6 +191,14 @@ class AppState extends ChangeNotifier {
         .collection("Courses ")
         .doc(name)
         .collection("subs"));
+  }
+
+  Future<List<Map>> fetchTutors() async {
+    final db = FirebaseFirestore.instance;
+    final ref = db.collection("tutors");
+    var snap = await ref.get();
+    
+    return TutorModel.listFromFirestore(snap);
   }
 
   snackBarMessage(String text, BuildContext context) {
