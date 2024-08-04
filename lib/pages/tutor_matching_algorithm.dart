@@ -14,7 +14,7 @@ class TutorModelMatcher {
       double experienceScore = (tutors["experience"] / 10) * 10;
 
       double totalScore = availabilityScore + specialtyScore + experienceScore;
-      return {'Tutor': tutors["name"], 'score': totalScore};
+      return {'Tutor': tutors["name"], 'score': totalScore, 'email': tutors["email"]};
     }).toList();
 
     tutorsScores.sort((a, b) => b['score'].compareTo(a['score']));
