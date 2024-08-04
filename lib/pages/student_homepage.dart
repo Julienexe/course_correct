@@ -1,8 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/main.dart';
+import 'package:course_correct/models/booking_model.dart';
+import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/login_page.dart';
+import 'package:course_correct/pages/student_booking_page.dart';
 import 'package:course_correct/pages/topic_selection_page.dart';
 import 'package:course_correct/pages/tutors/tutor_sorting.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
+
+String formatTimestamp(Timestamp timestamp) {
+  DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
+  return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+}
+
 
 class StudentHomepage extends StatelessWidget {
   const StudentHomepage({super.key});
@@ -19,7 +32,6 @@ class StudentHomepage extends StatelessWidget {
       (route) => false, // This prevents going back to the previous screen
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +61,7 @@ class StudentHomepage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>const TutorSorting(),
+                    builder: (context) => const TutorSorting(),
                   ),
                 );
               },
@@ -70,68 +82,115 @@ class StudentHomepage extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Search Bar
-              const TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Search for tutors',
-                  suffixIcon: Icon(Icons.search),
-                ),
-              ),
-              const SizedBox(height: 16.0),
-
-              // Featured Tutors
-              const Text(
-                'Featured Tutors',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
-              SizedBox(
-                height: 150,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: <Widget>[
-                    FeaturedTutorCard(tutorName: 'Tutor 1'),
-                    FeaturedTutorCard(tutorName: 'Tutor 2'),
-                    FeaturedTutorCard(tutorName: 'Tutor 3'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16.0),
-
-              // Upcoming Appointments
-              const Text(
-                'Upcoming Appointments',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
-              ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  AppointmentCard(appointmentDetails: 'Math with Tutor 1 at 3 PM'),
-                  AppointmentCard(appointmentDetails: 'Science with Tutor 2 at 5 PM'),
-                ],
-              ),
-              const SizedBox(height: 16.0),
-
-              // Quick Links
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  QuickLinkButton(text: 'Find a Tutor', icon: Icons.search,page: TopicSelectionPage(studentId: appState.user!.uid),),
-                  QuickLinkButton(text: 'My Appointments', icon: Icons.calendar_today),
-                  QuickLinkButton(text: 'Messages', icon: Icons.message),
-                ],
-              ),
-            ],
-          ),
-        ),
+        child: FutureBuilder(
+            future: gatherData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final studentData = snapshot.data![1];
+              final Booking = snapshot.data![0];
+              return studentData != null
+                  ? Container(
+                      width: double.infinity,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(255, 7, 129, 229),
+                              Color.fromARGB(255, 255, 255, 255),
+                            ]),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text(
+                                'Welcome back,',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              StudentAppointment(studentData: studentData,booking: Booking,),
+                              Card(
+                                elevation: 2,
+                                child: Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    children: [
+                                      const Text(
+                                        'Quick Links',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16.0),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          
+                                          QuickLinkButton(
+                                            text: 'Appointments',
+                                            icon: Icons.calendar_today,
+                                            page: AppointmentsPage(),
+                                          ),
+                                          QuickLinkButton(
+                                            text: 'Contact Us',
+                                            icon: Icons.message,
+                                            page: null,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : Center(
+                      child: Card(
+                        elevation: 2,
+                        child: Container(
+                          margin: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              const Text(
+                                  'Looks like you do not have a tutor yet'),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TopicSelectionPage(studentId: appState.user!.uid,),
+                                    ),
+                                  );
+                                },
+                                child: const Text('Find a Tutor'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+            }),
       ),
       // Footer
       bottomNavigationBar: BottomAppBar(
@@ -167,16 +226,17 @@ class StudentHomepage extends StatelessWidget {
 
   AppBar studentAppBar(BuildContext context) {
     return AppBar(
-      title: const Text('Student Homepage'),
+      backgroundColor: const Color.fromARGB(255, 7, 129, 229),
+      title: const Text(' Home', style: TextStyle(color: Colors.white)),
       actions: [
         IconButton(
-          icon: const Icon(Icons.message),
+          icon: const Icon(Icons.message, color: Colors.white),
           onPressed: () {
             // Navigate to messages
           },
         ),
         IconButton(
-          icon: const Icon(Icons.person),
+          icon: const Icon(Icons.person, color: Colors.white),
           onPressed: () {
             // Navigate to profile
             Navigator.pop(context);
@@ -185,6 +245,91 @@ class StudentHomepage extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class StudentAppointment extends StatelessWidget {
+  const StudentAppointment({
+    super.key,
+    required this.studentData, this.booking,
+  });
+
+  final studentData;
+  final booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return booking == null? Card(
+      elevation: 2,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              'Your tutoring session with ${studentData['tutor']}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            const Text(
+              'No appointment set yet',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(255, 0, 0, 0),
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) =>  TutorBookingPage(),
+                    ));
+              },
+              child: const Text('View Appointments'),
+            ),
+          ],
+        ),
+      ),
+    ):
+
+    Card(
+      elevation: 2,
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              'Your tutoring session with ${studentData['tutor']} is scheduled for ${formatTimestamp(booking['startTime'])} ',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.blue,
+              ),
+            ),
+            
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                // Navigator.push(
+                //     context, 
+                //     MaterialPageRoute(
+                //       builder: (context) =>  TutorBookingPage(),
+                //     ));
+              },
+              child: const Text('Message Tutor'),
+            ),
+          ],
+        ),
+      ),
+    );
+
   }
 }
 
@@ -233,7 +378,8 @@ class QuickLinkButton extends StatelessWidget {
   final Widget? page;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton({super.key, required this.text, required this.icon, this.page});
+  QuickLinkButton(
+      {super.key, required this.text, required this.icon, this.page});
 
   @override
   Widget build(BuildContext context) {
@@ -243,18 +389,53 @@ class QuickLinkButton extends StatelessWidget {
           icon: Icon(icon),
           onPressed: () {
             // Handle quick link button press
-             if (page != null) {
-               Navigator.push(context, MaterialPageRoute(
-              builder: 
-              (context) => page as Widget,
-              ),
+            if (page != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => page as Widget,
+                ),
               );
-             }
-
-              },
+            }
+          },
         ),
         Text(text),
       ],
     );
+  }
+}
+
+Future<List> gatherData() async {
+  final bookings = await getStudentBooking();
+  final studentData = await getStudentData();
+  return [bookings, studentData];
+
+}
+
+Future<Map<String, dynamic>?> getStudentBooking()async{
+  try {
+    final db = FirebaseFirestore.instance;
+   
+          /// Retrieves a document from the 'bookings' collection where the 'studentId' field is equal to the user's 'uid' from the appState.
+          ///
+          /// Returns a Future containing the document.
+          var data = await db
+            .collection('bookings')
+            .where('studentId', isEqualTo: appState.user!.uid)
+            .get();
+    
+    return data.docs.first.data();
+  } on Exception {
+    return null;
+  }
+}
+
+Future<Map<String, dynamic>?> getStudentData() async {
+  try {
+    final db = FirebaseFirestore.instance;
+    final data = await db.collection('students').doc(appState.user!.uid).get();
+    return data.data();
+  } on Exception {
+    return null;
   }
 }

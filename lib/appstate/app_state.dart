@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 
 class AppState extends ChangeNotifier {
   bool animationcomplete = false;
+  String? selectedTutor;
 
   //variable to store the current user
   User? user;
@@ -27,7 +28,10 @@ class AppState extends ChangeNotifier {
   //course related variables
   String? courseName;
   CoursesModel? course;
-
+  void setTutor(tutor){
+    selectedTutor = tutor;
+    notifyListeners();
+  }
   void changeTheme() {
     if (_theme == ThemeData.light()) {
       _theme = ThemeData.dark();

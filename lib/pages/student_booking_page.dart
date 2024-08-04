@@ -1,3 +1,4 @@
+import 'package:course_correct/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,8 +20,8 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
 
   Future<void> fetchTutors() async {
     final querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .where('role', isEqualTo: 'tutor')
+        .collection('tutors')
+        .where("email" ,isEqualTo: appState.selectedTutor)
         .get();
     List<Map<String, dynamic>> fetchedTutors = [];
     for (var doc in querySnapshot.docs) {
@@ -59,7 +60,7 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
       final now = DateTime.now();
 
       // Ensure the booking is exactly one hour
-      if (endTime.difference(startTime) != Duration(hours: 1)) {
+      if (endTime.difference(startTime) != const Duration(hours: 1)) {
         throw Exception('Booking must be exactly one hour.');
       }
 
@@ -81,21 +82,21 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
           .doc(tutorId)
           .get();
 
-      final availableStartTime = DateTime(
-        now.year, now.month, now.day,
-        int.parse(tutorData['startTime'].split(':')[0]),
-        int.parse(tutorData['startTime'].split(':')[1].split(' ')[0]),
-      );
+      // final availableStartTime = DateTime(
+      //   now.year, now.month, now.day,
+      //   double.parse(startTime.toString().split(':')[0]) as int,
+      //   double.parse(startTime.toString().split(':')[1].split(' ')[0]) as int,
+      // );
 
-      final availableEndTime = DateTime(
-        now.year, now.month, now.day,
-        int.parse(tutorData['endTime'].split(':')[0]),
-        int.parse(tutorData['endTime'].split(':')[1].split(' ')[0]),
-      );
+      // final availableEndTime = DateTime(
+      //   now.year, now.month, now.day,
+      //   double.parse(endTime.toString().split(':')[0]) as int,
+      //   double.parse(endTime.toString().split(':')[1].split(' ')[0]) as int,
+      // );
 
-      if (startTime.isBefore(availableStartTime) || endTime.isAfter(availableEndTime)) {
-        throw Exception('Selected time slot is out of the tutor\'s available hours.');
-      }
+      // if (startTime.isBefore(availableStartTime) || endTime.isAfter(availableEndTime)) {
+      //   throw Exception('Selected time slot is out of the tutor\'s available hours.');
+      // }
 
       // Check if the student has reached the monthly booking limit for this tutor
       if (await canBookSessionThisMonth(studentId, tutorId)) {
@@ -106,7 +107,7 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
           'endTime': endTime,
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Session booked successfully!')),
+          const SnackBar(content: Text('Session booked successfully!')),
         );
       } else {
         throw Exception('Booking limit reached for this month');
@@ -126,15 +127,24 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
   List<DateTime> generateTimeSlots(DateTime start, DateTime end) {
     List<DateTime> slots = [];
     DateTime slotStart = start;
-    while (slotStart.add(Duration(hours: 1)).isBefore(end) || slotStart.add(Duration(hours: 1)).isAtSameMomentAs(end)) {
+    while (slotStart.add(const Duration(hours: 1)).isBefore(end) || slotStart.add(const Duration(hours: 1)).isAtSameMomentAs(end)) {
       slots.add(slotStart);
-      slotStart = slotStart.add(Duration(hours: 1));
+      slotStart = slotStart.add(const Duration(hours: 1));
     }
     return slots;
   }
-
+  //parse time of day properly
+  String _parseTimeOfDay(String timeString) {
+  final timeParts = timeString.replaceAll('TimeOfDay(', '').replaceAll(')', '').split(':');
+  final hour = int.parse(timeParts[0]);
+  final minute = int.parse(timeParts[1]);
+  return "$hour:$minute";
+}
   // Helper function to parse time strings
   DateTime _parseTime(String timeStr, DateTime referenceDate) {
+    //if the string starts with TimeOfDay, parse it as TimeOfDay
+    if (timeStr.startsWith('TimeOfDay')) timeStr = _parseTimeOfDay(timeStr);
+    
     final amPmPattern = RegExp(r'(AM|PM)$', caseSensitive: false);
     bool is12HourFormat = amPmPattern.hasMatch(timeStr);
 
@@ -172,21 +182,21 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select and Book a Tutor'),
+        title: const Text('Book an appointment'),
       ),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? const Center(
+              child: const CircularProgressIndicator(),
             )
           : ListView.builder(
-              padding: EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0),
               itemCount: tutors.length,
               itemBuilder: (context, index) {
                 final tutor = tutors[index];
                 final tutorData = tutor['data'] as Map<String, dynamic>?;
 
                 if (tutorData == null) {
-                  return Card(
+                  return const Card(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       title: Text('No data available'),
@@ -195,7 +205,7 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
                 }
 
                 final tutorName = tutorData['name'] ?? 'Unknown';
-                final startTimeStr = tutorData['startTime'] ?? '00:00'; // Default to '00:00' if null
+                final startTimeStr = (tutorData['startTime'] )?? '00:00'; // Default to '00:00' if null
                 final endTimeStr = tutorData['endTime'] ?? '23:59'; // Default to '23:59' if null
 
                 DateTime startOfDay = DateTime.now(); // Adjust as needed
@@ -211,19 +221,19 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
                   List<DateTime> timeSlots = generateTimeSlots(availableStart, availableEnd);
 
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ExpansionTile(
                       title: Text(
                         tutorName,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
                         'Available from $startTimeStr to $endTimeStr',
                         style: TextStyle(color: Colors.grey[600]),
                       ),
-                      leading: Icon(Icons.school, color: Colors.blue),
+                      leading: const Icon(Icons.school, color: Colors.blue),
                       children: timeSlots.map((slot) {
-                        DateTime slotEnd = slot.add(Duration(hours: 1));
+                        DateTime slotEnd = slot.add(const Duration(hours: 1));
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                           child: Row(
@@ -231,10 +241,10 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
                               Expanded(
                                 child: Text(
                                   '${slot.hour}:${slot.minute.toString().padLeft(2, '0')} - ${slotEnd.hour}:${slotEnd.minute.toString().padLeft(2, '0')}',
-                                  style: TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 16),
                                 ),
                               ),
-                              SizedBox(width: 8.0),
+                              const SizedBox(width: 8.0),
                               ElevatedButton(
                                 onPressed: () async {
                                   try {
@@ -243,7 +253,7 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
                                     // Error handling is already included in bookSession
                                   }
                                 },
-                                child: Text('Book'),
+                                child: const Text('Book'),
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white, backgroundColor: Colors.cyan,
                                 ),
@@ -257,11 +267,11 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
                 } catch (e) {
                   print('Error parsing time: $e');
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       title: Text(
                         '$tutorName has no valid available times',
-                        style: TextStyle(color: Colors.red),
+                        style: const TextStyle(color: Colors.red),
                       ),
                     ),
                   );
