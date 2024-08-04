@@ -14,9 +14,9 @@ dependencies:
     sdk: flutter
   http: ^1.2.1
   flutter_dotenv: ^5.0.2
-  
+  intl: ^0.17.0
 
-
+  carousel_slider: ^4.2.1
   lottie: ^3.1.2
   cupertino_icons: ^1.0.6
   firebase_core: ^3.1.1
