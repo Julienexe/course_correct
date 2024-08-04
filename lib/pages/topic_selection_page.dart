@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:course_correct/pages/algorithm_practice_page.dart';
 import 'package:course_correct/pages/web_development_practice.dart';
@@ -20,6 +23,8 @@ class TopicSelectionPage extends StatelessWidget {
           children: [
             ElevatedButton(
               onPressed: () {
+                setTopicOnDatabase(studentId, 'Algorithms');
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -32,6 +37,7 @@ class TopicSelectionPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                setTopicOnDatabase(studentId, 'Web Development');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -44,6 +50,7 @@ class TopicSelectionPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
+                setTopicOnDatabase(studentId, 'Programming Basics');
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -60,3 +67,13 @@ class TopicSelectionPage extends StatelessWidget {
     );
   }
 }
+
+void setTopicOnDatabase(String studentId, String topic) {
+  // Set the topic on the database
+final db = FirebaseFirestore.instance;
+                    db.collection('students').doc(studentId).set({
+                      'email': FirebaseAuth.instance.currentUser!.email,
+                      'topic': topic
+                    });
+}
+
