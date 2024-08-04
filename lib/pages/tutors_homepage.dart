@@ -25,7 +25,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
     // Navigate to the login screen
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
+      MaterialPageRoute(builder: (context) => const LoginPage()),
       (route) => false, // This prevents going back to the previous screen
     );
   }
@@ -33,9 +33,10 @@ class _TutorHomepageState extends State<TutorHomepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      
       appBar: AppBar(
-        title: const Text('Tutor Homepage'),
+        backgroundColor: const Color.fromARGB(255, 7, 129, 229),
+        title: const Text('Tutor Homepage', style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
             icon: const Icon(Icons.message),
@@ -88,100 +89,120 @@ class _TutorHomepageState extends State<TutorHomepage> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Welcome Message
-              Text(
-                'Welcome, $_userName',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16.0),
-
-              // Calendar
-              const Text(
-                'Calendar',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
-              TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2030, 12, 31),
-                focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDay = selectedDay;
-                    _focusedDay =
-                        focusedDay; // update `_focusedDay` here as well
-                  });
-                },
-                onFormatChanged: (format) {
-                  if (_calendarFormat != format) {
-                    setState(() {
-                      _calendarFormat = format;
-                    });
-                  }
-                },
-                onPageChanged: (focusedDay) {
-                  _focusedDay = focusedDay;
-                },
-              ),
-              const SizedBox(height: 16.0),
-
-              // New Requests
-              const Text(
-                'New Requests',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8.0),
-              ListView(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  RequestCard(
-                      requestDetails: 'Math tutoring request from Student 1'),
-                  RequestCard(
-                      requestDetails:
-                          'Science tutoring request from Student 2'),
-                ],
-              ),
-              const SizedBox(height: 16.0),
-
-              // Quick Links
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  QuickLinkButton(
-                    text: 'Appointments',
-                    icon: Icons.calendar_today,
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/appointments');
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+            Color.fromARGB(255, 7, 129, 229),
+            Color.fromARGB(255, 255, 255, 255),
+          ]),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Welcome Message
+                Text(
+                  'Welcome, $_userName',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                ),
+                const SizedBox(height: 16.0),
+            
+                // Calendar
+                const Text(
+                  'Calendar',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8.0),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: TableCalendar(
+                    firstDay: DateTime.utc(2020, 1, 1),
+                    lastDay: DateTime.utc(2030, 12, 31),
+                    focusedDay: _focusedDay,
+                    calendarFormat: _calendarFormat,
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(() {
+                        _selectedDay = selectedDay;
+                        _focusedDay =
+                            focusedDay; // update `_focusedDay` here as well
+                      });
+                    },
+                    onFormatChanged: (format) {
+                      if (_calendarFormat != format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      }
+                    },
+                    onPageChanged: (focusedDay) {
+                      _focusedDay = focusedDay;
                     },
                   ),
-                  QuickLinkButton(
-                    text: 'Manage Availability',
-                    icon: Icons.schedule,
-                    onPressed: () {
-                      // Handle Manage Availability press
-                    },
-                  ),
-                  QuickLinkButton(
-                    text: 'Message Students',
-                    icon: Icons.message,
-                    onPressed: () {
-                      // Handle Message Students press
-                    },
-                  )
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 16.0),
+            
+                // New Requests
+                const Text(
+                  'New Requests',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8.0),
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: <Widget>[
+                    RequestCard(
+                        requestDetails: 'Math tutoring request from Student 1'),
+                    RequestCard(
+                        requestDetails:
+                            'Science tutoring request from Student 2'),
+                  ],
+                ),
+                const SizedBox(height: 16.0),
+            
+                // Quick Links
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    QuickLinkButton(
+                      text: 'Appointments',
+                      icon: Icons.calendar_today,
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/appointments');
+                      },
+                    ),
+                    QuickLinkButton(
+                      text: 'Manage Availability',
+                      icon: Icons.schedule,
+                      onPressed: () {
+                        // Handle Manage Availability press
+                      },
+                    ),
+                    QuickLinkButton(
+                      text: 'Message Students',
+                      icon: Icons.message,
+                      onPressed: () {
+                        // Handle Message Students press
+                      },
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
