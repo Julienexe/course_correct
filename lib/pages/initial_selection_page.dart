@@ -59,6 +59,7 @@ class RoleSelectionPage extends StatelessWidget {
               RoleSelectionButton(
                 role: 'Student',
                 onTap: () async {
+
                   await updateUserRole('student', context);
                   Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
                     MaterialPageRoute(
