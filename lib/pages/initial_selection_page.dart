@@ -48,7 +48,7 @@ class RoleSelectionPage extends StatelessWidget {
                 role: 'Student',
                 onTap: () async {
                   await updateUserRole('student');
-                  Navigator.pushNamed(context, '/tutorBookingPage',);
+                  Navigator.pushNamed(context, '/studentHomepage',);
                 },
               ),
               const SizedBox(height: 50),

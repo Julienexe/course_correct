@@ -62,7 +62,7 @@ class StudentHomepage extends StatelessWidget {
             ListTile(
               title: const Text('Find a Tutor'),
               onTap: () {
-                // Navigate to find a tutor
+                Navigator.pushNamed(context, '/tutorBookingPage');
               },
             ),
             ListTile(

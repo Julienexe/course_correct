@@ -2,6 +2,8 @@ import 'package:course_correct/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../main.dart';
+
 const TextStyle defaultTextStyle = TextStyle(
     fontFamily: 'Arial',
     fontWeight: FontWeight.w500,
@@ -123,6 +125,8 @@ class _LoginPageState extends State<LoginPage> {
                     )));
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: email, password: password);
+
+                        storeDeviceToken();
         
                     //navigate to landing page
                     Navigator.pushNamed(context, '/landingpage');
