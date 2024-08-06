@@ -8,7 +8,19 @@ packages:
       sha256: b1595874fbc8f7a50da90f5d8f327bb0bfd6a95dc906c390efe991540c3b54aa
       url: "https://pub.dev"
     source: hosted
+
     version: "1.3.40"
+
+    version: "1.3.38"
+  accordion:
+    dependency: "direct main"
+    description:
+      name: accordion
+      sha256: "0eca3d1c619c6df63d6e384010fd2ef1164e7385d7102f88a6b56f658f160cd0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.6.0"
+
   archive:
     dependency: transitive
     description:
@@ -41,6 +53,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  carousel_slider:
+    dependency: "direct main"
+    description:
+      name: carousel_slider
+      sha256: "9c695cc963bf1d04a47bd6021f68befce8970bcd61d24938e1fb0918cf5d9c42"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.2.1"
   characters:
     dependency: transitive
     description:
@@ -105,6 +125,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  concentric_transition:
+    dependency: "direct main"
+    description:
+      name: concentric_transition
+      sha256: "825191221e4bc6a0cfaf00adbc5cd2cc1333970f61311bce52021f1f68e0a891"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   crypto:
     dependency: transitive
     description:
@@ -246,6 +274,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -270,6 +299,16 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.2.0"
+
+  flutter_multi_select_items:
+    dependency: "direct main"
+    description:
+      name: flutter_multi_select_items
+      sha256: f8182eddcc3a9a19a56b401da2e4408eb4b6a9d2a99123d70f14bbf81868d8df
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.3"
+
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -280,6 +319,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  get:
+    dependency: transitive
+    description:
+      name: get
+      sha256: e4e7335ede17452b391ed3b2ede016545706c01a02292a6c97619705e7d2a85e
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.6"
   http:
     dependency: "direct main"
     description:
@@ -305,13 +352,13 @@ packages:
     source: hosted
     version: "4.2.0"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
-      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      sha256: "910f85bce16fb5c6f614e117efa303e85a1731bb0081edf3604a2ae6e9a3cc91"
       url: "https://pub.dev"
     source: hosted
-    version: "0.19.0"
+    version: "0.17.0"
   json_annotation:
     dependency: transitive
     description:
@@ -384,14 +431,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.0"
-  multi_select_flutter:
-    dependency: "direct main"
-    description:
-      name: multi_select_flutter
-      sha256: "503857b415d390d29159df8a9d92d83c6aac17aaf1c307fb7bcfc77d097d20ed"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.3"
   nested:
     dependency: transitive
     description:
@@ -480,6 +519,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  scroll_to_index:
+    dependency: transitive
+    description:
+      name: scroll_to_index
+      sha256: b707546e7500d9f070d63e5acf74fd437ec7eeeb68d3412ef7b0afada0b4f176
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   simple_gesture_detector:
     dependency: transitive
     description:
@@ -529,10 +576,10 @@ packages:
     dependency: "direct main"
     description:
       name: table_calendar
-      sha256: "4ca32b2fc919452c9974abd4c6ea611a63e33b9e4f0b8c38dba3ac1f4a6549d1"
+      sha256: "7f1270313c0cdb245b583ed8518982c01d4a7e95869b3c30abcbae3b642c45d0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.0.8"
   term_glyph:
     dependency: transitive
     description:

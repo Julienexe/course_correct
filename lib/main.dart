@@ -65,19 +65,19 @@ class MyApp extends StatelessWidget {
         title: 'Course Correct',
         debugShowCheckedModeBanner: false,
         routes: {
-          '/studentHomepage': (context) => StudentHomepage(),
+          '/studentHomepage': (context) => const StudentHomepage(),
           '/profilepage': (context) => const ProfilePage1(),
           '/landingpage': (context) => LandingPage(),
-          '/appointments': (context) => TutorAppointments(),
+          '/tutorappointments': (context) => TutorAppointments(),
           '/students': (context) => TutorStudents(),
           '/appointments': (context) => AppointmentsPage(),
-          '/tutorAvailabilityPage': (context) => TutorAvailabilityPage(),
+          '/tutorAvailabilityPage': (context) => const TutorAvailabilityPage(),
           '/tutorBookingPage': (context) => TutorBookingPage(),
         },
         theme: ThemeData(
           primaryColor: Colors.white,
           colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.cyan,
+            primarySwatch: Colors.blue,
             backgroundColor: Colors.white
           ),
           textTheme: const TextTheme(

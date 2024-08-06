@@ -1,12 +1,16 @@
 import 'package:course_correct/main.dart';
+import 'package:course_correct/models/user_model.dart';
+import 'package:course_correct/pages/student_homepage.dart';
+import 'package:course_correct/pages/tutors/fancy_questionnaire.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 class RoleSelectionPage extends StatelessWidget {
   const RoleSelectionPage({super.key});
 
-  Future<void> updateUserRole(String role) async {
+  Future<void> updateUserRole(String role, BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       try {
@@ -19,8 +23,7 @@ class RoleSelectionPage extends StatelessWidget {
 
         // Prepare the new data to be merged
         Map<String, dynamic> newData = {
-          'role': role,
-          'isEnrolled': false, // Assuming initial enrollment status is false
+          'role': role, // Assuming initial enrollment status is false
         };
 
         // Merge existing data with new data
@@ -28,8 +31,14 @@ class RoleSelectionPage extends StatelessWidget {
           ...existingData,
           ...newData,
         }, SetOptions(merge: true));
+
+        // Update the user profile in the app state
+        appState.setUserProfile(UserModel(
+          name: existingData['name'],
+          role: role,
+        ));
       } catch (e) {
-        print("Error updating user role: $e");
+        appState.snackBarMessage(e.toString(), context);
       }
     }
   }
@@ -37,6 +46,9 @@ class RoleSelectionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: firstAppbar(),
+      drawer: firstDrawer(context),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -47,16 +59,27 @@ class RoleSelectionPage extends StatelessWidget {
               RoleSelectionButton(
                 role: 'Student',
                 onTap: () async {
-                  await updateUserRole('student');
-                  Navigator.pushNamed(context, '/studentHomepage',);
+
+                  await updateUserRole('student', context);
+                  Navigator.of(_scaffoldKey.currentContext!).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const StudentHomepage(),
+                    ),
+                  );
                 },
               ),
               const SizedBox(height: 50),
               RoleSelectionButton(
                 role: 'Tutor',
                 onTap: () async {
-                  await updateUserRole('tutor');
-                  Navigator.pushNamed(context, '/tutorAvailabilityPage');
+                  await updateUserRole('tutor', context);
+                 // Navigator.pushNamed(context, '/tutorAvailabilityPage');
+                 Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>ConcentricAnimationOnboarding()
+                    ),
+                  );
                 },
               ),
             ],
@@ -115,3 +138,76 @@ class RoleSelectionButton extends StatelessWidget {
     );
   }
 }
+
+ Drawer firstDrawer(BuildContext context) {
+    return Drawer(
+      child: Container(
+        color: Colors.grey[100],
+        child: Column(
+          children: [
+            DrawerHeader(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  iconColor: Colors.blueAccent, // background color
+                  backgroundColor: Colors.white, // foreground color
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/profilepage');
+                },
+                child: const Icon(
+                  Icons.person,
+                  size: 45,
+                ),
+              ),
+            ),
+            // Categories with Dropdown
+            
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                Navigator.pop(context);
+                // go to settings page
+                Navigator.pushNamed(context, '/settingspage');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text("Logout"),
+              onTap: () {
+                //log user out
+               appState.logoutUser(context);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  AppBar firstAppbar() {
+    return AppBar(
+      title: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Course ",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            "Correct ",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.black87,
+      elevation: 50,
+      iconTheme: const IconThemeData(color: Colors.lightBlueAccent),
+    );
+  }
+

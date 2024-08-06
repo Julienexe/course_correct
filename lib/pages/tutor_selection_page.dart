@@ -1,75 +1,319 @@
+import 'package:accordion/accordion.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:course_correct/main.dart';
 import 'package:course_correct/models/courses_models.dart';
+import 'package:course_correct/models/user_model.dart';
 import 'package:course_correct/pages/tutors_homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_multi_select_items/flutter_multi_select_items.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
-}
+// int current_page = 0;
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TutorAvailabilityPage(),
-    );
-  }
-}
-
-// class CoursesModel {
-//   String name;
-
-//   CoursesModel({
-//     required this.name,
-//   });
-
-//   factory CoursesModel.fromFirestore(DocumentSnapshot doc) {
-//     Map data = doc.data() as Map<String, dynamic>;
-//     return CoursesModel(
-//       name: data['name'],
-//     );
-//   }
-
-//   static List<CoursesModel> listFromFirestore(QuerySnapshot snapshot) {
-//     return snapshot.docs.map((doc) {
-//       return CoursesModel.fromFirestore(doc);
-//     }).toList();
-//   }
-// }
+//   List<Widget> pages = [
+//       Topics(),
+//       SubTopics(name: name),
+//       DaysOfTheWeek(),
+//       TimeSelection()
+//     ];
+List<String> days = [];
+Map<String, int> subsRating = {};
 
 class TutorAvailabilityPage extends StatefulWidget {
+  const TutorAvailabilityPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _TutorAvailabilityPageState createState() => _TutorAvailabilityPageState();
 }
 
 class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
-  final Map<String, bool> selectedSubjects = {};
-  final Map<String, bool> selectedDays = {
-    'Monday': false,
-    'Tuesday': false,
-    'Wednesday': false,
-    'Thursday': false,
-    'Friday': false,
-    'Saturday': false,
-    'Sunday': false,
-  };
-
-  TimeOfDay? startTime;
-  TimeOfDay? endTime;
-
-  Future<List<CoursesModel>> fetchCourses() async {
-  try {
-    var snap = await FirebaseFirestore.instance.collection("Courses ").get();
-    return CoursesModel.listFromFirestore(snap);
-  } catch (e) {
-    print("Error fetching courses: $e");
-    return [];
+  @override
+  Widget build(BuildContext context) {
+    return const Questions();
   }
 }
+
+class Questions extends StatefulWidget {
+  const Questions({
+    super.key,
+  });
+
+  @override
+  State<Questions> createState() => _QuestionsState();
+}
+
+class _QuestionsState extends State<Questions> {
+  // ignore: non_constant_identifier_names
+  int current_page = 0;
+
+  void _nextPage() {
+    setState(() {
+      current_page++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Tutor Availability'),
+      ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+          ),
+          child: IndexedStack(
+            index: current_page,
+            children: [
+              //courses
+              CoursesBuilder(
+                future: appState.getCourses(),
+                next: _nextPage,
+              ),
+              //subtopics
+              SubTopics(
+                next: _nextPage,
+              ),
+              DaysOfTheWeek(next: _nextPage),
+              const TimeSelection(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//Functions to fetch topics and subtopics were moved to appstate
+
+class SubTopics extends StatelessWidget {
+  final Function next;
+  const SubTopics({super.key, required this.next});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: appState.fetchSubs(appState.courseName),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final data = snapshot.data as List<CoursesModel>;
+          return Center(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                        'How competent are you in the following concepts',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
+                    Accordion(children: [
+                      ...data.map((e) => AccordionSection(
+                            isOpen: false,
+                            leftIcon: const Icon(Icons.circle_outlined,
+                                color: Colors.black54),
+                            rightIcon: const Icon(
+                              Icons.keyboard_arrow_down,
+                              color: Colors.black54,
+                              size: 20,
+                            ),
+                            headerBackgroundColor: Colors.transparent,
+                            headerBackgroundColorOpened:
+                                const Color.fromARGB(255, 255, 255, 255),
+                            headerBorderColor: Colors.black54,
+                            headerBorderColorOpened: Colors.black54,
+                            headerBorderWidth: 1,
+                            headerPadding: const EdgeInsets.all(4),
+                            contentBackgroundColor:
+                                const Color.fromARGB(255, 255, 255, 255),
+                            contentBorderColor: Colors.black54,
+                            contentBorderWidth: 1,
+                            contentVerticalPadding: 30,
+                            header: Text(e.name,
+                                style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            content: Column(
+                              children: [
+                                MultiSelectCheckList(
+                                    maxSelectableCount: 1,
+                                    items: [
+                                      CheckListCard(
+                                          title: const Text('1'), value: 1),
+                                      CheckListCard(
+                                          title: const Text('2'), value: 2),
+                                      CheckListCard(
+                                          title: const Text('3'), value: 3),
+                                      CheckListCard(
+                                          title: const Text('4'), value: 4),
+                                      CheckListCard(
+                                          title: const Text('5'), value: 5)
+                                    ],
+                                    onChange: (allItems, selected) {
+                                      subsRating[e.name] = selected;
+                                    }),
+                              ],
+                            ),
+                          )),
+                    ]),
+                    ElevatedButton(
+                      child: const Text('Next'),
+                      onPressed: () {
+                        if (subsRating.length == 5) {
+                          next();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Incomplete Selection'),
+                                content: const Text('Please select all options for all 5 sub topics.'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+}
+
+class CoursesBuilder extends StatelessWidget {
+  final Future<Object?>? future;
+  final Function next;
+
+  const CoursesBuilder({
+    super.key,
+    this.future,
+    required this.next,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final data = snapshot.data as List<CoursesModel>;
+          //change data to checklist items
+          final listItems = data
+              .map((e) => CheckListCard(title: Text(e.name), value: e.name))
+              .toList();
+          return SelectCard(listItems, context, next);
+        });
+  }
+
+  // ignore: non_constant_identifier_names
+  Center SelectCard(List<CheckListCard<String>> listItems, BuildContext context,
+      Function next) {
+    return Center(
+      child: Card(
+        elevation: 3,
+        child: SizedBox(
+          height: 400,
+          child: MultiSelectCheckList(
+              maxSelectableCount: 1,
+              items: listItems,
+              onChange: (allSelected, selectedItem) {
+                //do something with the selected item
+                appState.setCourseName(selectedItem);
+                next();
+              }),
+        ),
+      ),
+    );
+  }
+}
+
+class DaysOfTheWeek extends StatelessWidget {
+  final Function next;
+  const DaysOfTheWeek({super.key, required this.next});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+          elevation: 3,
+          child: SizedBox(
+            height: 600,
+            child: Column(
+              children: [
+                MultiSelectCheckList(
+                  maxSelectableCount: 6,
+                  items: [
+                    CheckListCard(title: const Text('Monday'), value: 'Monday'),
+                    CheckListCard(
+                        title: const Text('Tuesday'), value: 'Tuesday'),
+                    CheckListCard(
+                        title: const Text('Wednesday'), value: 'Wednesday'),
+                    CheckListCard(
+                        title: const Text('Thursday'), value: 'Thursday'),
+                    CheckListCard(title: const Text('Friday'), value: 'Friday'),
+                    CheckListCard(
+                        title: const Text('Saturday'), value: 'Saturday'),
+                  ],
+                  onChange: (allSelected, selectedItem) {
+                    // Add the selected item to the list of days
+
+                    days.add(selectedItem);
+
+                    //do something with the selected item
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navigate to next page
+                    next();
+                  },
+                  child: const Text('Next'),
+                ),
+              ],
+            ),
+          )),
+    );
+  }
+}
+
+class TimeSelection extends StatefulWidget {
+  const TimeSelection({super.key});
+
+  @override
+  State<TimeSelection> createState() => _TimeSelectionState();
+}
+
+class _TimeSelectionState extends State<TimeSelection> {
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
 
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -87,165 +331,112 @@ class _TutorAvailabilityPageState extends State<TutorAvailabilityPage> {
     }
   }
 
-Future<void> submitTutorInfo() async {
-  User? user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    try {
-      // Fetch the current data
-      DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
-
-      // Prepare the new data to be merged
-      Map<String, dynamic> newData = {
-        'role': 'tutor',
-        'subjects': selectedSubjects.keys.where((key) => selectedSubjects[key] == true).toList(),
-        'days': selectedDays.keys.where((key) => selectedDays[key] == true).toList(),
-        'startTime': startTime != null ? startTime!.format(context) : '',
-        'endTime': endTime != null ? endTime!.format(context) : '',
-      };
-
-      // Merge existing data with new data
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-        ...existingData,
-        ...newData,
-      }, SetOptions(merge: true));
-
-    } catch (e) {
-      print("Error updating tutor info: $e");
+  String _formatTime(TimeOfDay? time) {
+    if (time == null) {
+      return 'Select Time';
     }
+    final hour = time.hourOfPeriod.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour:$minute $period';
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Tutor Availability'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const Text(
-              'Select Subjects You Want to Teach',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: FutureBuilder<List<CoursesModel>>(
-                future: fetchCourses(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (snapshot.hasData) {
-                    final courses = snapshot.data!;
-                    return ListView(
-                      children: courses.map((course) {
-                        return CheckboxListTile(
-                          title: Text(course.name),
-                          value: selectedSubjects[course.name] ?? false,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              selectedSubjects[course.name] = value ?? false;
-                            });
-                          },
-                        );
-                      }).toList(),
-                    );
-                  } else {
-                    return const Center(
-                      child: Text('No subjects available'),
-                    );
-                  }
+    return Center(
+      child: Card(
+        elevation: 3,
+        child: SizedBox(
+          height: 200,
+          width: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  // Select start time
+                  _selectTime(context, true);
                 },
+                child: Text(_formatTime(startTime)),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Select Your Available Days',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: ListView(
-                children: selectedDays.keys.map((day) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    child: CheckboxListTile(
-                      title: Text(day),
-                      value: selectedDays[day],
-                      onChanged: (bool? value) {
-                        setState(() {
-                          selectedDays[day] = value ?? false;
-                        });
-                      },
-                    ),
-                  );
-                }).toList(),
+              const Text(' to '),
+              TextButton(
+                onPressed: () {
+                  // Select end time
+                  _selectTime(context, false);
+                },
+                child: Text(_formatTime(endTime)),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Select Your Available Hours',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              elevation: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: <Widget>[
-                    TextButton(
-                      onPressed: () => _selectTime(context, true),
-                      child: Text(startTime == null
-                          ? 'Start Time'
-                          : startTime!.format(context)),
-                    ),
-                    const Text(' to '),
-                    TextButton(
-                      onPressed: () => _selectTime(context, false),
-                      child: Text(endTime == null
-                          ? 'End Time'
-                          : endTime!.format(context)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: () async {
-                  await submitTutorInfo();
-                  Navigator.pushReplacement(
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate to next page
+                  submitTutorInfo(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const TutorHomepage(),
-                    ),
+                    startTime ?? TimeOfDay.now(),
+                    endTime ?? TimeOfDay.now(),
+                    appState.courseName!,
+                    days,
                   );
+                  Navigator.pushReplacement(context,
+                      MaterialPageRoute(builder: (context) {
+                    return const TutorHomepage();
+                  }));
                 },
-                child: const Text('Submit'),
+                child: const Text('Next'),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+Future<void> submitTutorInfo(
+    BuildContext context,
+    TimeOfDay startTime,
+    TimeOfDay endTime,
+    String selectedSubject,
+    List<String> selectedDays) async {
+  User? user = FirebaseAuth.instance.currentUser;
+  if (user != null) {
+    // Fetch the current data
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      Map<String, dynamic> existingData = doc.data() as Map<String, dynamic>;
+
+      // Prepare the new data to be merged
+      Map<String, dynamic> newData = {
+        "name": existingData['name'],
+        "email":existingData['email'],
+        'role': 'tutor',
+        'subjects': selectedSubject,
+        "subtopics": subsRating,
+        'days': days,
+        'startTime': startTime.toString(),
+        'endTime': endTime.toString(),
+        "availability":1,
+        "experience":1,
+      };
+
+      // Merge existing data with new data
+      await FirebaseFirestore.instance.collection('tutors').doc(user.uid).set({
+        ...newData,
+      }, SetOptions(merge: true));
+      appState.setUserProfile(UserModel(
+        name: existingData['name'],
+        role: 'tutor',
+      ));
+    } on Exception catch (e) {
+      //show snackbar
+      final snackBar = SnackBar(
+        content: Text('An error occurred: $e'),
+      );
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+}

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool? _isEnrolled;
+  // ignore: unused_field
   String? _role;
   String? _userId;
 
@@ -40,8 +43,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (_isEnrolled == null) {
-      return Scaffold(
-        body: Center(
+      return const Scaffold(
+        body: const Center(
           child: CircularProgressIndicator(),
         ),
       );
@@ -53,13 +56,13 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('You are not enrolled yet.'),
-              SizedBox(height: 20),
+              const Text('You are not enrolled yet.'),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   // Navigate to enrollment page or perform enrollment
                 },
-                child: Text('Get Enrolled'),
+                child: const Text('Get Enrolled'),
               ),
             ],
           ),
@@ -68,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     // If enrolled, show the homepage content
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text('Welcome to Course Correct!'),
       ),

@@ -1,6 +1,6 @@
+import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main.dart';
 
@@ -143,10 +143,11 @@ class _LoginPageState extends State<LoginPage> {
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(content: Text(e.toString())));
                   }
+
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(
-                      Color.fromARGB(255, 0, 0, 0)),
+                      const Color.fromARGB(255, 0, 0, 0)),
                   foregroundColor: WidgetStateProperty.all(Colors.white),
                   shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
@@ -187,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   style: ButtonStyle(
                     foregroundColor: WidgetStateProperty.all(
-                        Color.fromARGB(255, 0, 0, 0)),
+                        const Color.fromARGB(255, 0, 0, 0)),
                     shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4),
                     )),

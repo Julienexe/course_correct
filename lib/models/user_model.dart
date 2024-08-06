@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel{
-  bool isTutor;
+  String name;
+  String? role;
 
   UserModel({
-    required this.isTutor
+    required this.name, this.role
   });
 
   //to firestore
   Map<String, dynamic> toFirestore() {
     return {
-      'isTutor': isTutor,
+      'name': name,
+      'role': role,
     };
   }
 
@@ -21,7 +23,8 @@ class UserModel{
   ) {
     final data = snapshot.data();
     return UserModel(
-      isTutor: data?['isTutor'],
+      name: data!['name'],
+      role: data['role'],
     );
   }
 }
