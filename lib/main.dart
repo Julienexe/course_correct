@@ -8,6 +8,7 @@ import 'package:course_correct/pages/tutor_appointments.dart';
 import 'package:course_correct/pages/tutor_selection_page.dart';
 import 'package:course_correct/pages/tutor_students.dart';
 import 'package:course_correct/pages/zoom_service.dart';
+import 'package:course_correct/pages/chatroom_list_page.dart'; // Import the chatroom list page
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -73,16 +74,15 @@ class MyApp extends StatelessWidget {
           '/appointments': (context) => AppointmentsPage(),
           '/tutorAvailabilityPage': (context) => const TutorAvailabilityPage(),
           '/tutorBookingPage': (context) => TutorBookingPage(),
+          '/chatrooms': (context) => ChatroomListPage(), // Add chatrooms route here
         },
         theme: ThemeData(
-          
           colorScheme: ColorScheme.fromSwatch(
             primarySwatch: Colors.cyan,
-            backgroundColor: Colors.white
+            backgroundColor: Colors.white,
           ),
           textTheme: const TextTheme(
-            headlineLarge:
-                TextStyle(fontFamily: 'Schyler', fontWeight: FontWeight.bold),
+            headlineLarge: TextStyle(fontFamily: 'Schyler', fontWeight: FontWeight.bold),
           ),
         ),
         home: Builder(builder: (context) {
