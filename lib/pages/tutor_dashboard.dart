@@ -9,7 +9,7 @@ class TutorDashboard extends StatelessWidget {
   final Map<String, int> scoresByTopic;
   final Map<String, int> questionsPerTopic;
 
-  TutorDashboard({
+  const TutorDashboard({super.key, 
     required this.studentId,
     required this.score,
     required this.scoresByTopic,
@@ -59,7 +59,7 @@ class TutorDashboard extends StatelessWidget {
                     '${entry.key}: ${entry.value}/${questionsPerTopic[entry.key]}',
                     style: const TextStyle(fontSize: 18),
                   );
-                }).toList(),
+                }),
                 const SizedBox(height: 20),
                 const Text(
                   'The next step is to find a tutor who can help you improve your scores.',
@@ -74,7 +74,8 @@ class TutorDashboard extends StatelessWidget {
                     appState.setTutor(topTutor['email']);
                     final db = FirebaseFirestore.instance;
                     db.collection('students').doc(studentId).update({
-                      'tutor': topTutor['Tutor']
+                      'tutor': topTutor['Tutor'],
+                      "tutorID": topTutor["id"]
 
                     });
                     

@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/main.dart';
-import 'package:course_correct/models/booking_model.dart';
 import 'package:course_correct/pages/appointments_page.dart';
+import 'package:course_correct/pages/chat_screen.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/student_booking_page.dart';
 import 'package:course_correct/pages/topic_selection_page.dart';
 import 'package:course_correct/pages/tutors/tutor_sorting.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 String formatTimestamp(Timestamp timestamp) {
@@ -87,12 +85,24 @@ class StudentHomepage extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
-                  child: CircularProgressIndicator(),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height:100,
+                      ), 
+                      CircularProgressIndicator(),
+                    ],
+                  ),
                 );
               }
-              final studentData = snapshot.data![1];
-              final Booking = snapshot.data![0];
-              return studentData != null
+              Map studentData={}; 
+              Map Booking={};
+              if (snapshot.hasData) {
+                
+              studentData = snapshot.data![1];
+              Booking = snapshot.data![0];
+              }
+              return studentData.isNotEmpty
                   ? Container(
                       width: double.infinity,
                       decoration: const BoxDecoration(
@@ -115,7 +125,7 @@ class StudentHomepage extends StatelessWidget {
                                 height: 20,
                               ),
                               const Text(
-                                'Welcome back,',
+                                'Welcome back',
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -165,29 +175,36 @@ class StudentHomepage extends StatelessWidget {
                       ),
                     )
                   : Center(
-                      child: Card(
-                        elevation: 2,
-                        child: Container(
-                          margin: const EdgeInsets.all(16.0),
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            children: [
-                              const Text(
-                                  'Looks like you do not have a tutor yet'),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => TopicSelectionPage(studentId: appState.user!.uid,),
-                                    ),
-                                  );
-                                },
-                                child: const Text('Find a Tutor'),
-                              ),
-                            ],
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height:200,
                           ),
-                        ),
+                          Card(
+                            elevation: 2,
+                            child: Container(
+                              margin: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  const Text(
+                                      'Looks like you do not have a tutor yet'),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TopicSelectionPage(studentId: appState.user!.uid,),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Find a Tutor'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
             }),
@@ -254,8 +271,8 @@ class StudentAppointment extends StatelessWidget {
     required this.studentData, this.booking,
   });
 
-  final studentData;
-  final booking;
+  final Map studentData;
+  final Map? booking;
 
   @override
   Widget build(BuildContext context) {
@@ -305,7 +322,7 @@ class StudentAppointment extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'Your tutoring session with ${studentData['tutor']} is scheduled for ${formatTimestamp(booking['startTime'])} ',
+              'Your tutoring session with ${studentData['tutor']} is scheduled for ${formatTimestamp(booking!['startTime'])} ',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -317,6 +334,17 @@ class StudentAppointment extends StatelessWidget {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
+               //create chatroom for student and tutor
+               final String chatRoomId = appState.user!.email!;
+                appState.createChatRoom(chatRoomId, [appState.user!.uid, studentData['tutorID']]);
+                Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) =>  ChatScreen(
+                        chatroomId: chatRoomId,
+                      ),
+                    ));
+                
                 // Navigator.push(
                 //     context, 
                 //     MaterialPageRoute(
