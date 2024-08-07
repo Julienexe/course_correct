@@ -1,6 +1,7 @@
 import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
+import 'package:course_correct/pages/chatroom_list_page.dart'; // Import the chatroom list page
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -34,9 +35,10 @@ class _TutorHomepageState extends State<TutorHomepage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> Carouselitems = [Container(
-      height: 360,
-      padding: EdgeInsets.all(5),
+    List<Widget> Carouselitems = [
+      Container(
+        height: 360,
+        padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -68,7 +70,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
         ),
       ),
       Container(
-        
         height: 300,
         width: 400,
         decoration: BoxDecoration(
@@ -78,18 +79,15 @@ class _TutorHomepageState extends State<TutorHomepage> {
         child: const Center(child: Text('Appointments')),
       ),
       Container(
-        
         height: 300,
         width: 400,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child:Icon(Icons.message)),
+        child: const Center(child: Icon(Icons.message)),
       ),
-
       Container(
-        //margin: const EdgeInsets.all(5.0),
         height: 250,
         width: 400,
         decoration: BoxDecoration(
@@ -98,7 +96,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
         ),
         child: const Center(child: Text('Manage Availability')),
       ),
-      
     ];
 
     return Scaffold(
@@ -109,7 +106,11 @@ class _TutorHomepageState extends State<TutorHomepage> {
           IconButton(
             icon: const Icon(Icons.message),
             onPressed: () {
-              // Navigate to messages
+              // Navigate to chatroom list
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatroomListPage()),
+              );
             },
           ),
           IconButton(
@@ -149,6 +150,15 @@ class _TutorHomepageState extends State<TutorHomepage> {
               },
             ),
             ListTile(
+              title: const Text('Chatrooms'), // Add chatrooms menu item
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatroomListPage()),
+                );
+              },
+            ),
+            ListTile(
               title: const Text('Logout'),
               onTap: () {
                 _handleLogout(context);
@@ -164,41 +174,34 @@ class _TutorHomepageState extends State<TutorHomepage> {
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 7, 129, 229),
-                  Color.fromARGB(255, 255, 255, 255),
-                ]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 7, 129, 229),
+                Color.fromARGB(255, 255, 255, 255),
+              ],
+            ),
           ),
           child: SingleChildScrollView(
             child: Center(
-              //padding: const EdgeInsets.all(0),
               child: Column(
-                
                 children: [
                   // Welcome Message
                   Text(
                     'Welcome, $_userName',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 20.0),
-        
                   // Calendar
-                  
                   CarouselWigdet(items: Carouselitems),
-        
                   const SizedBox(height: 16.0),
-        
                   // New Requests
-                  
-        
                   // Quick Links
-                 
                 ],
               ),
             ),
@@ -263,11 +266,12 @@ class QuickLinkButton extends StatelessWidget {
   final IconData icon;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton(
-      {super.key,
-      required this.text,
-      required this.icon,
-      required Null Function() onPressed});
+  QuickLinkButton({
+    super.key,
+    required this.text,
+    required this.icon,
+    required Null Function() onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
