@@ -1,5 +1,6 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../main.dart';
@@ -110,40 +111,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   final email = _email.text;
                   final password = _password.text;
-                  try {
-                    //show login snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Row(
-                      children: [
-                        Text(
-                          'Logging you in',
-                          style: defaultTextStyle,
-                        ),
-                        Spacer(),
-                        CircularProgressIndicator()
-                      ],
-                    )));
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email, password: password);
-
-                        storeDeviceToken();
-        
-                    //navigate to landing page
-                    Navigator.pushNamed(context, '/landingpage');
-        
-                    // UserProfile user = await AppState().readUserProfileFromFirestore();
-        
-                    // Navigator.of(context).pushNamedAndRemoveUntil(homeRoute,
-                    // (route) => false,
-                    // arguments: user
-        
-                    // );
-                  } catch (e) {
-                    //show the error on a snackbar
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text(e.toString())));
-                  }
-
+                  appState.loginSequence(email, password, context);
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(

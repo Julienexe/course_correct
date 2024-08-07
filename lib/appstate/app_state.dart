@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:course_correct/models/courses_models.dart';
 import 'package:course_correct/models/tutor_model.dart';
 import 'package:course_correct/models/user_model.dart';
+import 'package:course_correct/pages/chat_service.dart';
 import 'package:course_correct/pages/landing_page.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/student_homepage.dart';
@@ -13,6 +14,8 @@ import 'package:flutter/material.dart';
 
 
 class AppState extends ChangeNotifier {
+  //variable to create a chatservice instance
+  ChatService chatService = ChatService();
   bool animationcomplete = false;
   String? selectedTutor;
 
@@ -202,6 +205,7 @@ class AppState extends ChangeNotifier {
     final ref = db.collection("tutors");
     var snap = await ref.get();
     
+    
     return TutorModel.listFromFirestore(snap);
   }
 
@@ -210,4 +214,19 @@ class AppState extends ChangeNotifier {
       content: Text(text),
     ));
   }
+
+  //chat service functions
+  void createChatRoom(String chatroomId, List<String> participants) {
+    chatService.createChatRoom(chatroomId, participants);
+  }
+
+  void sendMessage(String chatroomId, String senderId, String text) {
+    chatService.sendMessage(chatroomId, senderId, text);
+  }
+
+  Stream<QuerySnapshot> getMessages(String chatroomId) {
+    return chatService.getMessages(chatroomId);
+  }
+
+  
 }
