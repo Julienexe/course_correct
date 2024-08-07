@@ -49,7 +49,8 @@ class TutorModel {
       'availability': data['availability'],
       'subtopics': data['subtopics'],
       'experience': data['experience'],
-      'days': data['days']
+      'days': data['days'],
+      "id": doc.id
     };
   }
 

@@ -75,9 +75,9 @@ class MyApp extends StatelessWidget {
           '/tutorBookingPage': (context) => TutorBookingPage(),
         },
         theme: ThemeData(
-          primaryColor: Colors.white,
+          
           colorScheme: ColorScheme.fromSwatch(
-            primarySwatch: Colors.blue,
+            primarySwatch: Colors.cyan,
             backgroundColor: Colors.white
           ),
           textTheme: const TextTheme(
