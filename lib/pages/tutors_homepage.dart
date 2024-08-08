@@ -2,9 +2,9 @@ import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/chatroom_list_page.dart';
-import 'package:course_correct/pages/contact_us_page.dart'; // Import Contact Us page
-import 'package:course_correct/pages/terms_and_conditions_page.dart'; // Import Terms & Conditions page
-import 'package:course_correct/pages/follow_us_page.dart'; // Import Follow Us page
+import 'package:course_correct/pages/contact_us_page.dart'; 
+import 'package:course_correct/pages/terms_and_conditions_page.dart';
+import 'package:course_correct/pages/follow_us_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
