@@ -1,4 +1,3 @@
-import 'package:course_correct/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,6 @@ class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key, required this.chatroomId});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChatScreenState createState() => _ChatScreenState();
 }
 
@@ -24,6 +22,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chat'),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
@@ -45,20 +44,22 @@ class _ChatScreenState extends State<ChatScreen> {
                     return Container(
                       margin: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: message['senderId'] == appState.user!.uid
+                        color: message['senderId'] == _auth.currentUser!.uid
                             ? Colors.blue[100]
                             : Colors.grey[200],
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: ListTile(
                         title: Text(message['text']),
-                        subtitle: (message['senderId']== appState.user!.uid? const Text("You", style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 10
-                        ),): const Text("Tutor",style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 10
-                        ),)),
+                        subtitle: Text(
+                          message['senderId'] == _auth.currentUser!.uid
+                              ? "You"
+                              : "Student",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 10,
+                          ),
+                        ),
                       ),
                     );
                   },
