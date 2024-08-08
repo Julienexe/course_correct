@@ -231,7 +231,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Follow Us (Social Media)
+                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => FollowUsPage()),
