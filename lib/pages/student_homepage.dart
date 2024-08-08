@@ -6,6 +6,9 @@ import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/student_booking_page.dart';
 import 'package:course_correct/pages/topic_selection_page.dart';
 import 'package:course_correct/pages/tutors/tutor_sorting.dart';
+import 'package:course_correct/pages/terms_and_conditions_page.dart';
+import 'package:course_correct/pages/contact_us_page.dart';
+import 'package:course_correct/pages/follow_us_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -13,7 +16,6 @@ String formatTimestamp(Timestamp timestamp) {
   DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
   return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
 }
-
 
 class StudentHomepage extends StatelessWidget {
   const StudentHomepage({super.key});
@@ -88,19 +90,18 @@ class StudentHomepage extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(
-                        height:100,
+                        height: 100,
                       ), 
                       CircularProgressIndicator(),
                     ],
                   ),
                 );
               }
-              Map studentData={}; 
-              Map Booking={};
+              Map studentData = {}; 
+              Map Booking = {};
               if (snapshot.hasData) {
-                
-              studentData = snapshot.data![1];
-              Booking = snapshot.data![0];
+                studentData = snapshot.data![1];
+                Booking = snapshot.data![0];
               }
               return studentData.isNotEmpty
                   ? Container(
@@ -132,7 +133,7 @@ class StudentHomepage extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                              StudentAppointment(studentData: studentData,booking: Booking,),
+                              StudentAppointment(studentData: studentData, booking: Booking,),
                               Card(
                                 elevation: 2,
                                 child: Container(
@@ -149,10 +150,8 @@ class StudentHomepage extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 16.0),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                         children: [
-                                          
                                           QuickLinkButton(
                                             text: 'Appointments',
                                             icon: Icons.calendar_today,
@@ -161,7 +160,7 @@ class StudentHomepage extends StatelessWidget {
                                           QuickLinkButton(
                                             text: 'Contact Us',
                                             icon: Icons.message,
-                                            page: null,
+                                            page: ContactUsPage(),
                                           ),
                                         ],
                                       ),
@@ -178,7 +177,7 @@ class StudentHomepage extends StatelessWidget {
                       child: Column(
                         children: [
                           const SizedBox(
-                            height:200,
+                            height: 200,
                           ),
                           Card(
                             elevation: 2,
@@ -187,8 +186,7 @@ class StudentHomepage extends StatelessWidget {
                               padding: const EdgeInsets.all(16.0),
                               child: Column(
                                 children: [
-                                  const Text(
-                                      'Looks like you do not have a tutor yet'),
+                                  const Text('Looks like you do not have a tutor yet'),
                                   ElevatedButton(
                                     onPressed: () {
                                       Navigator.push(
@@ -218,19 +216,34 @@ class StudentHomepage extends StatelessWidget {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Navigate to Contact Us
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ContactUsPage(),
+                    ),
+                  );
                 },
                 child: const Text('Contact Us'),
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Terms & Conditions
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const TermsAndConditionsPage(),
+                    ),
+                  );
                 },
                 child: const Text('Terms & Conditions'),
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Social Media
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const FollowUsPage(),
+                    ),
+                  );
                 },
                 child: const Text('Follow Us'),
               ),
@@ -276,7 +289,7 @@ class StudentAppointment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return booking == null? Card(
+    return booking == null ? Card(
       elevation: 2,
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -305,7 +318,7 @@ class StudentAppointment extends StatelessWidget {
                 Navigator.push(
                     context, 
                     MaterialPageRoute(
-                      builder: (context) =>  TutorBookingPage(),
+                      builder: (context) => TutorBookingPage(),
                     ));
               },
               child: const Text('View Appointments'),
@@ -313,9 +326,7 @@ class StudentAppointment extends StatelessWidget {
           ],
         ),
       ),
-    ):
-
-    Card(
+    ) : Card(
       elevation: 2,
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -330,26 +341,19 @@ class StudentAppointment extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
-            
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-               //create chatroom for student and tutor
-               final String chatRoomId = appState.user!.email!;
+                //create chatroom for student and tutor
+                final String chatRoomId = appState.user!.email!;
                 appState.createChatRoom(chatRoomId, [appState.user!.uid, studentData['tutorID']]);
                 Navigator.push(
                     context, 
                     MaterialPageRoute(
-                      builder: (context) =>  ChatScreen(
+                      builder: (context) => ChatScreen(
                         chatroomId: chatRoomId,
                       ),
                     ));
-                
-                // Navigator.push(
-                //     context, 
-                //     MaterialPageRoute(
-                //       builder: (context) =>  TutorBookingPage(),
-                //     ));
               },
               child: const Text('Message Tutor'),
             ),
@@ -357,7 +361,6 @@ class StudentAppointment extends StatelessWidget {
         ),
       ),
     );
-
   }
 }
 
@@ -406,8 +409,8 @@ class QuickLinkButton extends StatelessWidget {
   final Widget? page;
 
   // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton(
-      {super.key, required this.text, required this.icon, this.page});
+  QuickLinkButton({
+    super.key, required this.text, required this.icon, this.page});
 
   @override
   Widget build(BuildContext context) {
@@ -437,21 +440,12 @@ Future<List> gatherData() async {
   final bookings = await getStudentBooking();
   final studentData = await getStudentData();
   return [bookings, studentData];
-
 }
 
-Future<Map<String, dynamic>?> getStudentBooking()async{
+Future<Map<String, dynamic>?> getStudentBooking() async {
   try {
     final db = FirebaseFirestore.instance;
-   
-          /// Retrieves a document from the 'bookings' collection where the 'studentId' field is equal to the user's 'uid' from the appState.
-          ///
-          /// Returns a Future containing the document.
-          var data = await db
-            .collection('bookings')
-            .where('studentId', isEqualTo: appState.user!.uid)
-            .get();
-    
+    var data = await db.collection('bookings').where('studentId', isEqualTo: appState.user!.uid).get();
     return data.docs.first.data();
   } on Exception {
     return null;
