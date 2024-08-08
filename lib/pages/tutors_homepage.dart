@@ -221,7 +221,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Terms & Conditions
+                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
