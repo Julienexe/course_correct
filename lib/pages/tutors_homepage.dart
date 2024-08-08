@@ -1,6 +1,10 @@
 import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
+import 'package:course_correct/pages/chatroom_list_page.dart';
+import 'package:course_correct/pages/contact_us_page.dart'; 
+import 'package:course_correct/pages/terms_and_conditions_page.dart';
+import 'package:course_correct/pages/follow_us_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -22,21 +26,19 @@ class _TutorHomepageState extends State<TutorHomepage> {
   // Function to handle logout action
   void _handleLogout(BuildContext context) {
     // Clear any stored authentication tokens or session data
-    // Example: AuthService.logout();
-
-    // Navigate to the login screen
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),
-      (route) => false, // This prevents going back to the previous screen
+      (route) => false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> Carouselitems = [Container(
-      height: 360,
-      padding: EdgeInsets.all(5),
+    List<Widget> Carouselitems = [
+      Container(
+        height: 360,
+        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
@@ -68,7 +70,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
         ),
       ),
       Container(
-        
         height: 300,
         width: 400,
         decoration: BoxDecoration(
@@ -78,18 +79,15 @@ class _TutorHomepageState extends State<TutorHomepage> {
         child: const Center(child: Text('Appointments')),
       ),
       Container(
-        
         height: 300,
         width: 400,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child:Icon(Icons.message)),
+        child: const Center(child: Icon(Icons.message)),
       ),
-
       Container(
-        //margin: const EdgeInsets.all(5.0),
         height: 250,
         width: 400,
         decoration: BoxDecoration(
@@ -98,7 +96,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
         ),
         child: const Center(child: Text('Manage Availability')),
       ),
-      
     ];
 
     return Scaffold(
@@ -109,7 +106,10 @@ class _TutorHomepageState extends State<TutorHomepage> {
           IconButton(
             icon: const Icon(Icons.message),
             onPressed: () {
-              // Navigate to messages
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ChatroomListPage()),
+              );
             },
           ),
           IconButton(
@@ -133,7 +133,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
             ListTile(
               title: const Text('Home'),
               onTap: () {
-                // Navigate to home
+                
               },
             ),
             ListTile(
@@ -146,6 +146,15 @@ class _TutorHomepageState extends State<TutorHomepage> {
               title: const Text('Appointments'),
               onTap: () {
                 Navigator.pushNamed(context, '/appointments');
+              },
+            ),
+            ListTile(
+              title: const Text('Chatrooms'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatroomListPage()),
+                );
               },
             ),
             ListTile(
@@ -164,48 +173,36 @@ class _TutorHomepageState extends State<TutorHomepage> {
           width: MediaQuery.of(context).size.width,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color.fromARGB(255, 7, 129, 229),
-                  Color.fromARGB(255, 255, 255, 255),
-                ]),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 7, 129, 229),
+                Color.fromARGB(255, 255, 255, 255),
+              ],
+            ),
           ),
           child: SingleChildScrollView(
             child: Center(
-              //padding: const EdgeInsets.all(0),
               child: Column(
-                
                 children: [
-                  // Welcome Message
                   Text(
                     'Welcome, $_userName',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(height: 20.0),
-        
-                  // Calendar
-                  
                   CarouselWigdet(items: Carouselitems),
-        
                   const SizedBox(height: 16.0),
-        
-                  // New Requests
-                  
-        
-                  // Quick Links
-                 
                 ],
               ),
             ),
           ),
         ),
       ),
-      // Footer
       bottomNavigationBar: BottomAppBar(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -214,19 +211,31 @@ class _TutorHomepageState extends State<TutorHomepage> {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  // Navigate to Contact Support
+                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ContactUsPage()),
+                  );
                 },
                 child: const Text('Support'),
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Terms & Conditions
+                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+                  );
                 },
                 child: const Text('Terms & Conditions'),
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to Social Media
+                  
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FollowUsPage()),
+                  );
                 },
                 child: const Text('Follow Us'),
               ),
@@ -234,53 +243,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class RequestCard extends StatelessWidget {
-  final String requestDetails;
-
-  // ignore: prefer_const_constructors_in_immutables
-  RequestCard({super.key, required this.requestDetails});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        title: Text(requestDetails),
-        trailing: const Icon(Icons.more_vert),
-        onTap: () {
-          // Handle request card tap
-        },
-      ),
-    );
-  }
-}
-
-class QuickLinkButton extends StatelessWidget {
-  final String text;
-  final IconData icon;
-
-  // ignore: prefer_const_constructors_in_immutables
-  QuickLinkButton(
-      {super.key,
-      required this.text,
-      required this.icon,
-      required Null Function() onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        IconButton(
-          icon: Icon(icon),
-          onPressed: () {
-            // Handle quick link button press
-          },
-        ),
-        Text(text),
-      ],
     );
   }
 }
