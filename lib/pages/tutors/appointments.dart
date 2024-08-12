@@ -7,18 +7,17 @@ class AppointmentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Appointments'),
+        title: const Text('Appointments'),
       ),
       body: FutureBuilder(
           future: getBookings(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              print(snapshot.data);
               return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text('Appointment'),
+                      title: const Text('Appointment'),
                       subtitle: Column(
                         children: [
                           Text(snapshot.data?[index]['startTime']),
@@ -28,9 +27,9 @@ class AppointmentsPage extends StatelessWidget {
                     );
                   });
             } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return Center(child: Text('No appointments for you yet'));
+              return const Center(child: Text('No appointments for you yet'));
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           }),
     );
