@@ -37,7 +37,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
   Widget build(BuildContext context) {
     List<Widget> Carouselitems = [
       Container(
-        height: 360,
+        height: 410,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
