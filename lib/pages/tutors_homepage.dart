@@ -2,7 +2,7 @@ import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/chatroom_list_page.dart';
-import 'package:course_correct/pages/contact_us_page.dart'; 
+import 'package:course_correct/pages/contact_us_page.dart';
 import 'package:course_correct/pages/terms_and_conditions_page.dart';
 import 'package:course_correct/pages/follow_us_page.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +76,12 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Text('Appointments')),
+        child: Center(
+            child: TextButton(
+                onPressed: () {
+                  //todo
+                },
+                child: Text('Appointments'))),
       ),
       Container(
         height: 300,
@@ -94,7 +99,12 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Text('Manage Availability')),
+        child: Center(
+            child: TextButton(
+                onPressed: () {
+                  //todo
+                },
+                child: Text('Manage Availability'))),
       ),
     ];
 
@@ -132,9 +142,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
             ),
             ListTile(
               title: const Text('Home'),
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
             ListTile(
               title: const Text('My Students'),
@@ -211,7 +219,6 @@ class _TutorHomepageState extends State<TutorHomepage> {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ContactUsPage()),
@@ -221,17 +228,16 @@ class _TutorHomepageState extends State<TutorHomepage> {
               ),
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => TermsAndConditionsPage()),
                   );
                 },
                 child: const Text('Terms & Conditions'),
               ),
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => FollowUsPage()),
