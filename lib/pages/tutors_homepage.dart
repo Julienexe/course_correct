@@ -90,7 +90,10 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Icon(Icons.message)),
+        child: Center(
+            child: IconButton(
+                onPressed: () => pushToChat(context),
+                icon: Icon(Icons.message))),
       ),
       Container(
         height: 250,
@@ -116,10 +119,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
           IconButton(
             icon: const Icon(Icons.message),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatroomListPage()),
-              );
+              pushToChat(context);
             },
           ),
           IconButton(
@@ -249,6 +249,13 @@ class _TutorHomepageState extends State<TutorHomepage> {
           ),
         ),
       ),
+    );
+  }
+
+  void pushToChat(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatroomListPage()),
     );
   }
 }
