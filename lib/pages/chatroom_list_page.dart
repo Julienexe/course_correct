@@ -1,3 +1,4 @@
+import 'package:course_correct/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'chat_screen.dart';
@@ -10,14 +11,14 @@ class ChatroomListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chatrooms'),
+        title: const Text('Chatrooms'),
         backgroundColor: Colors.blueAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('chatrooms').snapshots(),
+        stream: FirebaseFirestore.instance.collection('chatrooms').where("participants", arrayContains: appState.user!.uid).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: const CircularProgressIndicator());
           }
           var chatrooms = snapshot.data!.docs;
 
@@ -33,7 +34,7 @@ class ChatroomListPage extends StatelessWidget {
                   backgroundColor: Colors.blueAccent,
                   child: Text(
                     chatroom.id.substring(0, 1).toUpperCase(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
                 onTap: () {
