@@ -6,7 +6,7 @@ import 'chat_service.dart';
 class ChatScreen extends StatefulWidget {
   final String chatroomId;
 
-  ChatScreen({required this.chatroomId});
+  const ChatScreen({super.key, required this.chatroomId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -21,7 +21,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chat Room'),
+        title: const Text('Chat'),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
@@ -30,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: _chatService.getMessages(widget.chatroomId),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 var messages = snapshot.data!.docs;
@@ -40,9 +41,26 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     var message = messages[index];
-                    return ListTile(
-                      title: Text(message['text']),
-                      subtitle: Text(message['senderId']),
+                    return Container(
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: message['senderId'] == _auth.currentUser!.uid
+                            ? Colors.blue[100]
+                            : Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ListTile(
+                        title: Text(message['text']),
+                        subtitle: Text(
+                          message['senderId'] == _auth.currentUser!.uid
+                              ? "You"
+                              : "Student",
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 10,
+                          ),
+                        ),
+                      ),
                     );
                   },
                 );
@@ -56,13 +74,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Enter your message...',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: _sendMessage,
                 ),
               ],

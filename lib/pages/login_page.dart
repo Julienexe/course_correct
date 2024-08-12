@@ -1,6 +1,9 @@
 import 'package:course_correct/main.dart';
 import 'package:course_correct/pages/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../main.dart';
 
 const TextStyle defaultTextStyle = TextStyle(
     fontFamily: 'Arial',
@@ -106,8 +109,8 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 5),
               FilledButton(
                 onPressed: () async {
-                  final String email = _email.text;
-                  final String password = _password.text;
+                  final email = _email.text;
+                  final password = _password.text;
                   appState.loginSequence(email, password, context);
                 },
                 style: ButtonStyle(
