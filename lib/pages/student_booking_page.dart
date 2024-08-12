@@ -1,9 +1,11 @@
 import 'package:course_correct/services/notification_service.dart';
 import 'package:course_correct/main.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+double _slotFactor = 0;
 class TutorBookingPage extends StatefulWidget {
   @override
   _TutorBookingPageState createState() => _TutorBookingPageState();
@@ -22,15 +24,14 @@ class _TutorBookingPageState extends State<TutorBookingPage> {
   Future<void> fetchTutors() async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('tutors')
-        .where("email" ,isEqualTo: appState.selectedTutor)
+        .doc(appState.selectedTutor)
         .get();
     List<Map<String, dynamic>> fetchedTutors = [];
-    for (var doc in querySnapshot.docs) {
+    
       fetchedTutors.add({
-        'id': doc.id,
-        'data': doc.data(),
+        'id': querySnapshot.id,
+        'data': querySnapshot.data(),
       });
-    }
     setState(() {
       tutors = fetchedTutors;
     });
@@ -110,6 +111,7 @@ Future<String> getUserType(String userId) async {
   }
 
   Future<void> bookSession(String studentId, String tutorId, DateTime startTime, DateTime endTime) async {
+  //print(startTime);
   setState(() {
     _isLoading = true; // Set loading state to true
   });
@@ -136,24 +138,25 @@ Future<String> getUserType(String userId) async {
 
     // Check if the tutor is available for this time slot
     final tutorData = await FirebaseFirestore.instance
-        .collection('users')
+        .collection('tutors')
         .doc(tutorId)
         .get();
-
+    String startTimeStr = _parseTimeOfDay(tutorData['startTime']); 
+    String endTimeStr = _parseTimeOfDay(tutorData['endTime']); 
     final availableStartTime = DateTime(
       now.year,
       now.month,
       now.day,
-      int.parse(tutorData['startTime'].split(':')[0]),
-      int.parse(tutorData['startTime'].split(':')[1].split(' ')[0]),
+      int.parse(startTimeStr.split(':')[0]),
+      int.parse(startTimeStr.split(':')[1].split(' ')[0]),
     );
 
     final availableEndTime = DateTime(
       now.year,
       now.month,
       now.day,
-      int.parse(tutorData['endTime'].split(':')[0]),
-      int.parse(tutorData['endTime'].split(':')[1].split(' ')[0]),
+      int.parse(endTimeStr.split(':')[0]),
+      int.parse(endTimeStr.split(':')[1].split(' ')[0]),
     );
 
     if (startTime.isBefore(availableStartTime) || endTime.isAfter(availableEndTime)) {
@@ -177,6 +180,13 @@ Future<String> getUserType(String userId) async {
         'endTime': endTime,
         'tutorName': tutorName,
         'studentName': studentName,
+      });
+
+      
+      
+      final newAvailability = tutorData['availability'] - _slotFactor;
+      await FirebaseFirestore.instance.collection('tutors').doc(tutorId).update({
+        'availability': newAvailability,
       });
 
       // Show custom floating notification for student
@@ -234,6 +244,7 @@ Future<String> getUserType(String userId) async {
       slots.add(slotStart);
       slotStart = slotStart.add(const Duration(hours: 1));
     }
+    _slotFactor = 1/slots.length;
     return slots;
   }
   //parse time of day properly
@@ -241,12 +252,16 @@ Future<String> getUserType(String userId) async {
   final timeParts = timeString.replaceAll('TimeOfDay(', '').replaceAll(')', '').split(':');
   final hour = int.parse(timeParts[0]);
   final minute = int.parse(timeParts[1]);
+
   return "$hour:$minute";
 }
   // Helper function to parse time strings
   DateTime _parseTime(String timeStr, DateTime referenceDate) {
     //if the string starts with TimeOfDay, parse it as TimeOfDay
-    if (timeStr.startsWith('TimeOfDay')) timeStr = _parseTimeOfDay(timeStr);
+    if (timeStr.startsWith('TimeOfDay')){
+      
+    timeStr = _parseTimeOfDay(timeStr);
+    } 
     
     final amPmPattern = RegExp(r'(AM|PM)$', caseSensitive: false);
     bool is12HourFormat = amPmPattern.hasMatch(timeStr);
@@ -271,7 +286,8 @@ Future<String> getUserType(String userId) async {
     final parts = timeStr.split(':');
     final hour = int.parse(parts[0]);
     final minute = int.parse(parts[1]);
-
+    
+    
     return DateTime(
       referenceDate.year, referenceDate.month, referenceDate.day,
       hour, minute,
@@ -308,8 +324,8 @@ Future<String> getUserType(String userId) async {
                 }
 
                 final tutorName = tutorData['name'] ?? 'Unknown';
-                final startTimeStr = (tutorData['startTime'] )?? '00:00'; // Default to '00:00' if null
-                final endTimeStr = tutorData['endTime'] ?? '23:59'; // Default to '23:59' if null
+                dynamic startTimeStr = (tutorData['startTime'] )?? '00:00'; // Default to '00:00' if null
+                dynamic endTimeStr = tutorData['endTime'] ?? '23:59'; // Default to '23:59' if null
 
                 DateTime startOfDay = DateTime.now(); // Adjust as needed
 
@@ -317,11 +333,21 @@ Future<String> getUserType(String userId) async {
                 DateTime? availableEnd;
 
                 try {
+
+                  if (startTimeStr.startsWith("Time") || endTimeStr.startsWith("Time")){
+                    startTimeStr = _parseTimeOfDay(startTimeStr);
+                    endTimeStr = _parseTimeOfDay(endTimeStr);
+                    availableStart = _parseTime(startTimeStr, startOfDay);
+                    availableEnd = _parseTime(endTimeStr, startOfDay);
+                  }else{
+
                   availableStart = _parseTime(startTimeStr, startOfDay);
                   availableEnd = _parseTime(endTimeStr, startOfDay);
+                  }
 
                   // Generate time slots
                   List<DateTime> timeSlots = generateTimeSlots(availableStart, availableEnd);
+                  //print(timeSlots);
 
                   return Card(
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -351,6 +377,7 @@ Future<String> getUserType(String userId) async {
                               ElevatedButton(
                                 onPressed: () async {
                                   try {
+                                  
                                     await bookSession(studentId, tutor['id'], slot, slotEnd);
                                   } catch (e) {
                                     // Error handling is already included in bookSession
