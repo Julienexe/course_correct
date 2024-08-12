@@ -1,10 +1,12 @@
 import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
+import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/chatroom_list_page.dart';
-import 'package:course_correct/pages/contact_us_page.dart'; 
+import 'package:course_correct/pages/contact_us_page.dart';
 import 'package:course_correct/pages/terms_and_conditions_page.dart';
 import 'package:course_correct/pages/follow_us_page.dart';
+import 'package:course_correct/pages/tutors/availability_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -37,7 +39,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
   Widget build(BuildContext context) {
     List<Widget> Carouselitems = [
       Container(
-        height: 360,
+        height: 410,
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -76,7 +78,14 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Text('Appointments')),
+        child: Center(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AppointmentsPage();
+                  }));
+                },
+                child: const Text('Appointments'))),
       ),
       Container(
         height: 300,
@@ -85,7 +94,10 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Icon(Icons.message)),
+        child: Center(
+            child: IconButton(
+                onPressed: () => pushToChat(context),
+                icon: const Icon(Icons.message))),
       ),
       Container(
         height: 250,
@@ -94,7 +106,14 @@ class _TutorHomepageState extends State<TutorHomepage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: const Center(child: Text('Manage Availability')),
+        child: Center(
+            child: TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AvailabilityPage();
+                  }));
+                },
+                child: const Text('Manage Availability'))),
       ),
     ];
 
@@ -106,10 +125,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
           IconButton(
             icon: const Icon(Icons.message),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatroomListPage()),
-              );
+              pushToChat(context);
             },
           ),
           IconButton(
@@ -132,9 +148,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
             ),
             ListTile(
               title: const Text('Home'),
-              onTap: () {
-                
-              },
+              onTap: () {},
             ),
             ListTile(
               title: const Text('My Students'),
@@ -211,30 +225,30 @@ class _TutorHomepageState extends State<TutorHomepage> {
             children: <Widget>[
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ContactUsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const ContactUsPage()),
                   );
                 },
                 child: const Text('Support'),
               ),
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const TermsAndConditionsPage()),
                   );
                 },
                 child: const Text('Terms & Conditions'),
               ),
               TextButton(
                 onPressed: () {
-                  
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FollowUsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const FollowUsPage()),
                   );
                 },
                 child: const Text('Follow Us'),
@@ -243,6 +257,13 @@ class _TutorHomepageState extends State<TutorHomepage> {
           ),
         ),
       ),
+    );
+  }
+
+  void pushToChat(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ChatroomListPage()),
     );
   }
 }

@@ -15,10 +15,13 @@ class ChatroomListPage extends StatelessWidget {
         backgroundColor: Colors.blueAccent,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('chatrooms').where("participants", arrayContains: appState.user!.uid).snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('chatrooms')
+            .where("participants", arrayContains: appState.user!.uid)
+            .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: const CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           var chatrooms = snapshot.data!.docs;
 
@@ -28,8 +31,10 @@ class ChatroomListPage extends StatelessWidget {
               var chatroom = chatrooms[index];
               var participants = chatroom['participants'];
               return ListTile(
-                title: Text('Chatroom ${chatroom.id}'),
-                subtitle: Text(participants.join(', ')),
+                textColor: Colors.white,
+                tileColor: const Color.fromARGB(255, 0, 0, 0),
+                title: Text(' ${chatroom.id}'),
+                subtitle: Text('Student'),
                 leading: CircleAvatar(
                   backgroundColor: Colors.blueAccent,
                   child: Text(
@@ -41,8 +46,7 @@ class ChatroomListPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ChatScreen(chatroomId: chatroom.id),
+                      builder: (context) => ChatScreen(chatroomId: chatroom.id),
                     ),
                   );
                 },
