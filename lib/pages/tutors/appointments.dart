@@ -13,6 +13,7 @@ class AppointmentsPage extends StatelessWidget {
           future: getBookings(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
+              print(snapshot.data);
               return ListView.builder(
                   itemCount: snapshot.data?.length,
                   itemBuilder: (context, index) {
@@ -26,6 +27,8 @@ class AppointmentsPage extends StatelessWidget {
                       ),
                     );
                   });
+            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
+              return Center(child: Text('No appointments for you yet'));
             } else {
               return Center(child: CircularProgressIndicator());
             }
@@ -34,11 +37,13 @@ class AppointmentsPage extends StatelessWidget {
   }
 }
 
-Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getBookings() async {
+Future<List<Map<String, dynamic>>> getBookings() async {
   final db = FirebaseFirestore.instance;
   var bookings = await db
       .collection('bookings')
       .where('tutorId', isEqualTo: appState.user?.uid)
-      .get();
-  return bookings.docs;
+      .get()
+      .then((value) => value.docs.map((e) => e.data()).toList());
+  //print(bookings);
+  return bookings;
 }
