@@ -9,6 +9,7 @@ import 'package:course_correct/pages/tutors/tutor_sorting.dart';
 import 'package:course_correct/pages/terms_and_conditions_page.dart';
 import 'package:course_correct/pages/contact_us_page.dart';
 import 'package:course_correct/pages/follow_us_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -83,7 +84,7 @@ class StudentHomepage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
-            future: gatherData(),
+            future: gather(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -97,12 +98,11 @@ class StudentHomepage extends StatelessWidget {
                   ),
                 );
               }
-              Map studentData = {}; 
-              Map Booking = {};
-              if (snapshot.hasData) {
-                studentData = snapshot.data![1];
-                Booking = snapshot.data![0];
-              }
+              
+                final Booking = snapshot.data?[0];
+                final studentData = snapshot.data?[1];
+                
+              
               return studentData.isNotEmpty
                   ? Container(
                       width: double.infinity,
@@ -289,7 +289,7 @@ class StudentAppointment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return booking == null ? Card(
+    return booking!.isEmpty ? Card(
       elevation: 2,
       child: Container(
         padding: const EdgeInsets.all(16.0),
@@ -436,28 +436,45 @@ class QuickLinkButton extends StatelessWidget {
   }
 }
 
+Future<List> gather()async{
+  Map? booking = {};
+  try {
+    booking = (await getStudentBooking());
+  } on Exception {
+    booking = {};
+  }
+  return[booking, await getStudentData()];
+}
+
 Future<List> gatherData() async {
   final bookings = await getStudentBooking();
   final studentData = await getStudentData();
+  print(bookings);
+  print(studentData);
   return [bookings, studentData];
 }
 
 Future<Map<String, dynamic>?> getStudentBooking() async {
-  try {
+  
     final db = FirebaseFirestore.instance;
     var data = await db.collection('bookings').where('studentId', isEqualTo: appState.user!.uid).get();
+    if (data.docs.isEmpty) {
+      return {};
+      
+    } 
     return data.docs.first.data();
-  } on Exception {
-    return null;
-  }
+  
 }
 
 Future<Map<String, dynamic>?> getStudentData() async {
   try {
     final db = FirebaseFirestore.instance;
-    final data = await db.collection('students').doc(appState.user!.uid).get();
+    //print("progress");
+    final data = await db.collection('students').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    appState.setTutor( data.data()!['tutorID']);
     return data.data();
   } on Exception {
-    return null;
+    //print("failed");
+    return {};
   }
 }
