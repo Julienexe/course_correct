@@ -5,6 +5,7 @@ import 'package:course_correct/pages/chatroom_list_page.dart';
 import 'package:course_correct/pages/contact_us_page.dart';
 import 'package:course_correct/pages/terms_and_conditions_page.dart';
 import 'package:course_correct/pages/follow_us_page.dart';
+import 'package:course_correct/pages/tutors/availability_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -105,7 +106,9 @@ class _TutorHomepageState extends State<TutorHomepage> {
         child: Center(
             child: TextButton(
                 onPressed: () {
-                  //todo
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AvailabilityPage();
+                  }));
                 },
                 child: Text('Manage Availability'))),
       ),
