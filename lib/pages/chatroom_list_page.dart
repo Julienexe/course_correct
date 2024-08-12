@@ -21,7 +21,7 @@ class ChatroomListPage extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: const CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           var chatrooms = snapshot.data!.docs;
 
