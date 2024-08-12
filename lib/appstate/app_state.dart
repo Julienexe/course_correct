@@ -49,6 +49,8 @@ class AppState extends ChangeNotifier {
     setUserProfile(await readUserProfileFromFirestore());
   }
 
+
+
   //user related functions
   void setUser(User? user) {
     this.user = user;
