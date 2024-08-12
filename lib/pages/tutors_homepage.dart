@@ -85,7 +85,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
                     return AppointmentsPage();
                   }));
                 },
-                child: Text('Appointments'))),
+                child: const Text('Appointments'))),
       ),
       Container(
         height: 300,
@@ -97,7 +97,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
         child: Center(
             child: IconButton(
                 onPressed: () => pushToChat(context),
-                icon: Icon(Icons.message))),
+                icon: const Icon(Icons.message))),
       ),
       Container(
         height: 250,
@@ -113,7 +113,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
                     return AvailabilityPage();
                   }));
                 },
-                child: Text('Manage Availability'))),
+                child: const Text('Manage Availability'))),
       ),
     ];
 
@@ -227,7 +227,8 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ContactUsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const ContactUsPage()),
                   );
                 },
                 child: const Text('Support'),
@@ -237,7 +238,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => TermsAndConditionsPage()),
+                        builder: (context) => const TermsAndConditionsPage()),
                   );
                 },
                 child: const Text('Terms & Conditions'),
@@ -246,7 +247,8 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => FollowUsPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const FollowUsPage()),
                   );
                 },
                 child: const Text('Follow Us'),
