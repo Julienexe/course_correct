@@ -1,5 +1,6 @@
 import 'package:course_correct/components/slider.dart';
 import 'package:course_correct/main.dart';
+import 'package:course_correct/pages/appointments_page.dart';
 import 'package:course_correct/pages/login_page.dart';
 import 'package:course_correct/pages/chatroom_list_page.dart';
 import 'package:course_correct/pages/contact_us_page.dart';
@@ -80,7 +81,9 @@ class _TutorHomepageState extends State<TutorHomepage> {
         child: Center(
             child: TextButton(
                 onPressed: () {
-                  //todo
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return AppointmentsPage();
+                  }));
                 },
                 child: Text('Appointments'))),
       ),
