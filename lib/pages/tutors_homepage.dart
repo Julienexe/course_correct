@@ -6,6 +6,7 @@ import 'package:course_correct/pages/chatroom_list_page.dart';
 import 'package:course_correct/pages/contact_us_page.dart';
 import 'package:course_correct/pages/terms_and_conditions_page.dart';
 import 'package:course_correct/pages/follow_us_page.dart';
+import 'package:course_correct/pages/tutors/appointments.dart';
 import 'package:course_correct/pages/tutors/availability_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -82,7 +83,7 @@ class _TutorHomepageState extends State<TutorHomepage> {
             child: TextButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return AppointmentsPage();
+                    return const Appointments();
                   }));
                 },
                 child: const Text('Appointments'))),
@@ -99,22 +100,22 @@ class _TutorHomepageState extends State<TutorHomepage> {
                 onPressed: () => pushToChat(context),
                 icon: const Icon(Icons.message))),
       ),
-      Container(
-        height: 250,
-        width: 400,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: Center(
-            child: TextButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return AvailabilityPage();
-                  }));
-                },
-                child: const Text('Manage Availability'))),
-      ),
+      // Container(
+      //   height: 250,
+      //   width: 400,
+      //   decoration: BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.circular(8.0),
+      //   ),
+      //   child: Center(
+      //       child: TextButton(
+      //           onPressed: () {
+      //             Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //               return AvailabilityPage();
+      //             }));
+      //           },
+      //           child: const Text('Manage Availability'))),
+      // ),
     ];
 
     return Scaffold(
@@ -148,18 +149,17 @@ class _TutorHomepageState extends State<TutorHomepage> {
             ),
             ListTile(
               title: const Text('Home'),
-              onTap: () {},
-            ),
-            ListTile(
-              title: const Text('My Students'),
               onTap: () {
-                Navigator.pushNamed(context, '/students');
+                Navigator.pop(context);
               },
             ),
+            
             ListTile(
               title: const Text('Appointments'),
               onTap: () {
-                Navigator.pushNamed(context, '/appointments');
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return const Appointments();
+                  }));
               },
             ),
             ListTile(

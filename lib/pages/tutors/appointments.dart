@@ -1,48 +1,70 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:course_correct/main.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AppointmentsPage extends StatelessWidget {
+List<Map<String,dynamic>> bookings = [];
+// ignore: use_key_in_widget_constructors
+class Appointments extends StatelessWidget {
+const Appointments({ Key? key }) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Appointments'),
-      ),
-      body: FutureBuilder(
-          future: getBookings(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: const Text('Appointment'),
-                      subtitle: Column(
-                        children: [
-                          Text(snapshot.data?[index]['startTime']),
-                          Text(snapshot.data?[index]['endTime']),
-                        ],
+  Widget build(BuildContext context){
+    return FutureBuilder(future: 
+    fetchBookings(), 
+    builder: (context,index){
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Appointments'),
+        ),
+        body: ListView.builder(
+                itemCount: bookings.length,
+                itemBuilder: (context, index) {
+                  final booking = bookings[index];
+                  final bookingData = booking['data'] as Map<String, dynamic>;
+        
+                  final startTime = bookingData['startTime'] as Timestamp;
+                  final endTime = bookingData['endTime'] as Timestamp;
+        
+                  final startDateTime = DateTime.fromMillisecondsSinceEpoch(startTime.millisecondsSinceEpoch);
+                  final endDateTime = DateTime.fromMillisecondsSinceEpoch(endTime.millisecondsSinceEpoch);
+        
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: ListTile(
+                      title: Text('${bookingData['studentName']}'),
+                      subtitle: Text(
+                        'From: ${startDateTime.hour}:${startDateTime.minute.toString().padLeft(2, '0')} ${startDateTime.hour < 12 ? 'AM' : 'PM'}'
+                        '\nTo: ${endDateTime.hour}:${endDateTime.minute.toString().padLeft(2, '0')} ${endDateTime.hour < 12 ? 'AM' : 'PM'}'
+                        '\nDate: ${startDateTime.day}/${startDateTime.month}/${startDateTime.year}',
                       ),
-                    );
-                  });
-            } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No appointments for you yet'));
-            } else {
-              return const Center(child: CircularProgressIndicator());
-            }
-          }),
+                    ),
+                  );
+                },
+              ),
+      );
+    }
     );
   }
 }
 
-Future<List<Map<String, dynamic>>> getBookings() async {
-  final db = FirebaseFirestore.instance;
-  var bookings = await db
-      .collection('bookings')
-      .where('tutorId', isEqualTo: appState.user?.uid)
-      .get()
-      .then((value) => value.docs.map((e) => e.data()).toList());
-  //print(bookings);
-  return bookings;
-}
+Future<void> fetchBookings() async {
+ 
+
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('bookings')
+        .where('tutorId', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    
+
+    List<Map<String, dynamic>> fetchedBookings = [];
+    for (var doc in querySnapshot.docs) {
+      fetchedBookings.add({
+        'id': doc.id,
+        'data': doc.data(),
+      });
+    }
+    
+    print(fetchedBookings);
+    bookings = fetchedBookings;
+   
+  }

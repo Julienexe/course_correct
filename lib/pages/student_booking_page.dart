@@ -200,19 +200,19 @@ Future<String> getUserType(String userId) async {
       );
 
       // Notify the tutor
-      final tutorToken = tutorData['deviceToken']; // Assuming 'deviceToken' is stored in Firestore
-      if (tutorToken != null) {
-        NotificationService().showNotification(
-          id: 2, // Use a different ID to differentiate notifications
-          title: 'New Booking',
-          body: 'You have a new session booked with student $studentName from ${startTime.hour}:${startTime.minute.toString().padLeft(2, '0')} to ${endTime.hour}:${endTime.minute.toString().padLeft(2, '0')}',
-          payload: 'booking_${startTime.millisecondsSinceEpoch}', // Optional: pass additional data
-          channelId: 'tutor_channel_id', // Separate channel for tutors
-          channelName: 'Tutor Notifications',
-          channelDescription: 'Notifications for new tutor bookings.',
+      // final tutorToken = tutorData['deviceToken']; // Assuming 'deviceToken' is stored in Firestore
+      // if (tutorToken != null) {
+      //   NotificationService().showNotification(
+      //     id: 2, // Use a different ID to differentiate notifications
+      //     title: 'New Booking',
+      //     body: 'You have a new session booked with student $studentName from ${startTime.hour}:${startTime.minute.toString().padLeft(2, '0')} to ${endTime.hour}:${endTime.minute.toString().padLeft(2, '0')}',
+      //     payload: 'booking_${startTime.millisecondsSinceEpoch}', // Optional: pass additional data
+      //     channelId: 'tutor_channel_id', // Separate channel for tutors
+      //     channelName: 'Tutor Notifications',
+      //     channelDescription: 'Notifications for new tutor bookings.',
 
-        );
-      }
+      //   );
+      // }
     } else {
       throw Exception('Booking limit reached for this month');
     }
@@ -231,6 +231,7 @@ Future<String> getUserType(String userId) async {
       _isLoading = false; // Set loading state to false after booking
     });
   }
+  Navigator.pushReplacementNamed(context, '/studentHomepage');
 }
 
 

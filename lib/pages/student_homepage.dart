@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+final String chatRoomId = appState.user!.email!;
 String formatTimestamp(Timestamp timestamp) {
   DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp.seconds * 1000);
   return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
@@ -52,21 +53,10 @@ class StudentHomepage extends StatelessWidget {
             ListTile(
               title: const Text('Home'),
               onTap: () {
-                // Navigate to home
+                Navigator.pop(context);
               },
             ),
-            ListTile(
-              title: const Text('Find a Tutor'),
-              onTap: () {
-                // Navigate to find a tutor
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TutorSorting(),
-                  ),
-                );
-              },
-            ),
+           
             ListTile(
               title: const Text('Appointments'),
               onTap: () {
@@ -99,8 +89,8 @@ class StudentHomepage extends StatelessWidget {
                 );
               }
               
-                final Booking = snapshot.data?[0];
-                final studentData = snapshot.data?[1];
+                final Booking = snapshot.data?[0]?? {};
+                final studentData = snapshot.data?[1]?? {};
                 
               
               return studentData.isNotEmpty
@@ -262,17 +252,23 @@ class StudentHomepage extends StatelessWidget {
         IconButton(
           icon: const Icon(Icons.message, color: Colors.white),
           onPressed: () {
-            // Navigate to messages
+           Navigator.push(
+                    context, 
+                    MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                        chatroomId: chatRoomId,
+                      ),
+                    ));
           },
         ),
-        IconButton(
-          icon: const Icon(Icons.person, color: Colors.white),
-          onPressed: () {
-            // Navigate to profile
-            Navigator.pop(context);
-            Navigator.pushNamed(context, '/profilepage');
-          },
-        ),
+        // IconButton(
+        //   icon: const Icon(Icons.person, color: Colors.white),
+        //   onPressed: () {
+        //     // Navigate to profile
+        //     Navigator.pop(context);
+        //     Navigator.pushNamed(context, '/profilepage');
+        //   },
+        // ),
       ],
     );
   }
@@ -292,11 +288,12 @@ class StudentAppointment extends StatelessWidget {
     return booking!.isEmpty ? Card(
       elevation: 2,
       child: Container(
+        width: 617,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             Text(
-              'Your tutoring session with ${studentData['tutor']}',
+              'Your tutor is ${studentData['tutor']}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -345,7 +342,7 @@ class StudentAppointment extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 //create chatroom for student and tutor
-                final String chatRoomId = appState.user!.email!;
+                
                 appState.createChatRoom(chatRoomId, [appState.user!.uid, studentData['tutorID']]);
                 Navigator.push(
                     context, 
@@ -439,7 +436,7 @@ class QuickLinkButton extends StatelessWidget {
 Future<List> gather()async{
   Map? booking = {};
   try {
-    booking = (await getStudentBooking());
+    booking = (await getStudentBooking()) ?? {};
   } on Exception {
     booking = {};
   }
@@ -472,7 +469,9 @@ Future<Map<String, dynamic>?> getStudentData() async {
     //print("progress");
     final data = await db.collection('students').doc(FirebaseAuth.instance.currentUser!.uid).get();
     appState.setTutor( data.data()!['tutorID']);
-    return data.data();
+
+
+    return data.data() ?? {};
   } on Exception {
     //print("failed");
     return {};
